@@ -1,0 +1,63 @@
+{% verbatim %}
+<div class="container" fade-in>
+    <div class="row">
+        <div class="col-md-12">
+            <h1>{{ group.name }} Members</h1>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <table>
+                <tr>
+                    <th>#</th><th>UNI</th>
+                </tr>
+                <tr ng-repeat="member in members">
+                    <td>{{ $index + 1 }}</td>
+                    <td>{{ member }}<span class="label label-danger pull-right" style="cursor: pointer;" data-ng-click="remove_email(member);">Remove</span></td>
+                </tr>
+            </table>
+        </div>
+        <div class="col-md-6">
+            <form name="memberForm" novalidate>
+                <label for="new_email">Add more members</label>
+                <div class="form-group"
+                     ng-class="{
+                         'has-error': memberForm.new_email.$dirty && memberForm.new_email.$invalid,
+                         'has-success': memberForm.new_email.$dirty && memberForm.new_email.$valid
+                     }">
+                    <div class="col-md-10">
+                        <input class="form-control"
+                               type="email"
+                               name="new_email"
+                               data-ng-model="new_email"
+                               data-ng-pattern="/.*@columbia\.edu$|.*@barnard\.edu/"
+                               placeholder="Fill in a columbia.edu or barnard.edu email address" />
+                    </div>
+                    <div class="col-md-2">
+                        <button class="btn"
+                                data-ng-disabled="memberForm.$invalid || memberForm.$pristine || new_email.length == 0"
+                                data-ng-class="{
+                                    'btn-success': memberForm.new_email.$dirty && member_form.new_email.$valid,
+                                    'btn-danger': memberForm.new_email.$dirty && member_form.new_email.$invalid
+                                }"
+                                data-ng-click="add_email(memberForm.new_email.$viewValue); new_email=''; memberForm.$setPristine(true);">
+                            Add new email
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <button class="btn"
+                    style="width: 100%;
+                           margin-top: 15px"
+                    data-ng-click="save()"
+                    data-ng-disabled="!membersDirty()">
+                Save changes
+            </button>
+        </div>
+    </div>
+</div>
+{% endverbatim %}

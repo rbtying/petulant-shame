@@ -60,6 +60,8 @@ class StudentGovernmentAndReadOnly(permissions.BasePermission):
 class GroupMember(permissions.BasePermission):
     @ro
     def has_object_permission(self, request, view, obj):
+        if request.user.email in obj.editors:
+            return True
         try:
             request.user.groups.get(pk=obj.pk)
             return True
@@ -80,8 +82,7 @@ class IsEditor(permissions.BasePermission):
         if is_student_government(request.user):
             return True
 
-        editor_list = obj.editors
-        if request.user.username in editor_list:
+        if request.user.email in obj.editors:
             return True
 
         return False

@@ -1,7 +1,11 @@
 'use strict';
 
 controllers
-    .controller('groupCtrl', function ($scope, $routeParams, $q, $log, $location) {
+    .controller('groupCtrl', function ($scope, $routeParams, $q, $log, API) {
         $log.log('init groupCtrl');
-        $scope.group = $scope.API.cache.groups[$routeParams.id]
+        API.groups.get($routeParams.id).then(function(data) {
+            $scope.group = data;
+        }, function (err) {
+
+        });
     });

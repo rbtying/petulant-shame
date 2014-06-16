@@ -98,7 +98,7 @@ GOOGLE_OAUTH2_AUTH_EXTRA_ARGUMENTS = {
 	'access_type': 'offline'
 }
 
-GOOGLE_WHITE_LISTED_DOMAINS = ['columbia.edu']
+GOOGLE_WHITE_LISTED_DOMAINS = ['columbia.edu', 'barnard.edu']
 SOCIAL_AUTH_USER_MODEL = 'auth.User'
 
 LOGIN_URL = '/login/'

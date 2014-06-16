@@ -1,12 +1,51 @@
-from rest_framework import viewsets
-from rest_any_permissions.permissions import AnyPermissions
+from rest_framework import viewsets, views
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from rest_framework.parsers import MultiPartParser
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
 import django_filters
 
 from serializers import *
+from models import *
 import permissions
+import datetime
+
+
+class FileUploadView(views.APIView):
+    parser_classes = (MultiPartParser,)
+    permission_classes = (IsAuthenticatedOrReadOnly,)
+
+    def put(self, request, format=None):
+        file_obj = request.FILES['file']
+        req_id = request.DATA.get('request_id')
+        name = request.DATA.get('name')
+
+        if not id or not name:
+            return Response(status=400)
+
+        try:
+            funding_request = FundingRequest.objects.get(id=req_id)
+        except FundingRequest.DoesNotExist:
+            return Response(status=404)
+
+        if not request.user.email in funding_request.editors:
+            return Response(status=403)
+
+        attachment = AttachedFile(attachment=file_obj,
+                                  request=funding_request,
+                                  name=name,
+                                  created_time=datetime.datetime.now())
+
+        attachment.save()
+
+        return Response(AttachedFileSerializer(attachment).data, status=204)
+
+
+class AttachmentViewSet(viewsets.ModelViewSet):
+    queryset = AttachedFile.objects.all()
+    serializer_class = AttachedFileSerializer
+    permission_classes = (permissions.ReadOnly,)
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -14,6 +53,31 @@ class UserViewSet(viewsets.ModelViewSet):
     serializer_class = UserSerializer
     permission_classes = (permissions.CouncilAndReadOnly,)
     filter_fields = ('username', 'groups', 'email')
+
+    @action()
+    def update_groups(self, request, *args, **kwargs):
+        if not request.user:
+            return Response({'error': 'Not logged in'}, status=403)
+        groups = Group.objects.all()
+        user_groups = request.user.groups.all()
+        dirty = False
+        for group in groups:
+            if group in user_groups:
+                continue
+
+            editor_list = group.groupprofile.editors
+            if request.user.email in editor_list:
+                request.user.groups.add(group)
+
+                editor_list.remove(request.user.email)
+                group.groupprofile.editors = editor_list
+                group.groupprofile.save()
+                dirty = True
+
+        if dirty:
+            request.user.save()
+
+        return Response({'groups': GroupSerializer(request.user.groups.all()).data})
 
 
 class GroupViewSet(viewsets.ModelViewSet):
@@ -25,37 +89,12 @@ class GroupViewSet(viewsets.ModelViewSet):
     filter_fields = ('groupprofile__group_type', 'name', 'id')
 
     @action()
-    def update_groups(self, request, *args, **kwargs):
-        if not request.user:
-            return Response({'error': 'Not logged in'})
-        groups = Group.objects.all()
-        user_groups = request.user.groups.all()
-        dirty = False
-        for group in groups:
-            if group in user_groups:
-                continue
-
-            editor_list = group.groupprofile.editors
-            if request.user.username in editor_list:
-                request.user.groups.add(group)
-
-                editor_list.remove(request.user.username)
-                group.groupprofile.editors = editor_list
-                group.groupprofile.save()
-                dirty = True
-
-        if dirty:
-            request.user.save()
-
-        return Response({'groups': GroupSerializer(request.user.groups.all()).data})
-
-    @action()
     def add_editor(self, request, pk=None):
         group = get_object_or_404(Group.objects.all(), pk=pk)
         name = request.DATA.get('name')
 
         try:
-            user = User.objects.get(username=name)
+            user = User.objects.get(email=name)
             user.groups.add(group)
             user.save()
         except User.DoesNotExist:
@@ -73,7 +112,7 @@ class GroupViewSet(viewsets.ModelViewSet):
 
         name = request.DATA.get('name')
         try:
-            user = User.objects.get(username=name)
+            user = User.objects.get(email=name)
             user.groups.remove(group)
             user.save()
         except User.DoesNotExist:
@@ -82,6 +121,34 @@ class GroupViewSet(viewsets.ModelViewSet):
                 editor_list.remove(name)
             group.groupprofile.editors = editor_list
             group.groupprofile.save()
+
+        return Response(GroupSerializer(group).data)
+
+    @action()
+    def set_editors(self, request, pk=None):
+        group = get_object_or_404(Group.objects.all(), pk=pk)
+
+        members = set(request.DATA)
+        existing_members = set(group.groupprofile.editors + [u.email for u in group.user_set.all()])
+        new_members = members - existing_members
+        removed_members = existing_members - members
+
+        for m in new_members:
+            try:
+                user = User.objects.get(email=m)
+                user.groups.add(group)
+                user.save()
+            except User.DoesNotExist:
+                group.groupprofile.editors.append(m)
+                group.groupprofile.save()
+        for m in removed_members:
+            try:
+                user = User.objects.get(email=m)
+                user.groups.remove(group)
+                user.save()
+            except User.DoesNotExist:
+                group.groupprofile.editors.remove(m)
+                group.groupprofile.save()
 
         return Response(GroupSerializer(group).data)
 
@@ -109,6 +176,17 @@ class StudentGroupViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsEditorNoPost,)
 
     filter_fields = ('name', 'governing_board__name', 'governing_board__id')
+
+    @action()
+    def set_editors(self, request, pk=None):
+        group = get_object_or_404(StudentGroup.objects.all(), pk=pk)
+
+        group.editors = request.DATA
+        if len(group.editors) == 0:
+            group.editors.append(request.user.email)
+        group.save()
+
+        return Response(StudentGroupPublicSerializer(group).data)
 
 
 class AllocationViewSet(viewsets.ModelViewSet):

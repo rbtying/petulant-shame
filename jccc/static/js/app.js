@@ -35,19 +35,25 @@ facu.config(['$routeProvider', '$locationProvider', '$httpProvider', function ($
         templateUrl: 'partials/allocations.html'
     });
     $routeProvider.when('/groups/:id', {
+        controller: 'groupsCtrl',
         templateUrl: 'partials/groups.html'
     });
     $routeProvider.when('/groups/:id/members', {
         templateUrl: 'partials/members.html',
+        controller: 'membersCtrl',
         resolve: {
+            'group_unit': function() {return 'groups'}
         }
     });
     $routeProvider.when('/student_groups/:id', {
+        controller: 'studentGroupsCtrl',
         templateUrl: 'partials/student_groups.html'
     });
     $routeProvider.when('/student_groups/:id/members', {
         templateUrl: 'partials/members.html',
+        controller: 'membersCtrl',
         resolve: {
+            'group_unit': function() {return 'student_groups'}
         }
     });
 
