@@ -1,155 +1,155 @@
 [
-{
-  "fields": {
-    "name": "ESC",
-    "permissions": []
-  },
-  "model": "auth.group",
-  "pk": 2
-},
-{
-  "fields": {
-    "name": "CCSC",
-    "permissions": []
-  },
-  "model": "auth.group",
-  "pk": 3
-},
-{
-  "fields": {
-    "name": "GSSC",
-    "permissions": []
-  },
-  "model": "auth.group",
-  "pk": 4
-},
-{
-  "fields": {
-    "name": "SGA",
-    "permissions": []
-  },
-  "model": "auth.group",
-  "pk": 5
-},
-{
-  "fields": {
-    "name": "ABC",
-    "permissions": []
-  },
-  "model": "auth.group",
-  "pk": 6
-},
-{
-  "fields": {
-    "name": "SGB",
-    "permissions": []
-  },
-  "model": "auth.group",
-  "pk": 7
-},
-{
-  "fields": {
-    "name": "CSGB",
-    "permissions": []
-  },
-  "model": "auth.group",
-  "pk": 8
-},
-{
-  "fields": {
-    "name": "IGC",
-    "permissions": []
-  },
-  "model": "auth.group",
-  "pk": 9
-},
-{
-  "fields": {
-    "name": "CI",
-    "permissions": []
-  },
-  "model": "auth.group",
-  "pk": 10
-},
-{
-  "fields": {
-    "group_type": "CNCL",
-    "full_name": "Engineering Student Council",
-    "editors": []
-  },
-  "model": "jccc.groupprofile",
-  "pk": 2
-},
-{
-  "fields": {
-    "group_type": "CNCL",
-    "full_name": "Columbia College Student Council",
-    "editors": []
-  },
-  "model": "jccc.groupprofile",
-  "pk": 3
-},
-{
-  "fields": {
-    "group_type": "CNCL",
-    "full_name": "General Studies Student Council",
-    "editors": []
-  },
-  "model": "jccc.groupprofile",
-  "pk": 4
-},
-{
-  "fields": {
-    "group_type": "CNCL",
-    "full_name": "Student Government Association",
-    "editors": []
-  },
-  "model": "jccc.groupprofile",
-  "pk": 5
-},
-{
-  "fields": {
-    "group_type": "GBRD",
-    "full_name": "Activities Board at Columbia",
-    "editors": []
-  },
-  "model": "jccc.groupprofile",
-  "pk": 6
-},
-{
-  "fields": {
-    "group_type": "GBRD",
-    "full_name": "Student Governing Board",
-    "editors": []
-  },
-  "model": "jccc.groupprofile",
-  "pk": 7
-},
-{
-  "fields": {
-    "group_type": "GBRD",
-    "full_name": "Club Sports Governing Board",
-    "editors": []
-  },
-  "model": "jccc.groupprofile",
-  "pk": 8
-},
-{
-  "fields": {
-    "group_type": "GBRD",
-    "full_name": "Inter Greek Council",
-    "editors": []
-  },
-  "model": "jccc.groupprofile",
-  "pk": 9
-},
-{
-  "fields": {
-    "group_type": "GBRD",
-    "full_name": "Community Impact",
-    "editors": []
-  },
-  "model": "jccc.groupprofile",
-  "pk": 10
-}
+    {
+        "fields": {
+            "name": "ESC",
+            "permissions": []
+        },
+        "model": "auth.group",
+        "pk": 2
+    },
+    {
+        "fields": {
+            "name": "CCSC",
+            "permissions": []
+        },
+        "model": "auth.group",
+        "pk": 3
+    },
+    {
+        "fields": {
+            "name": "GSSC",
+            "permissions": []
+        },
+        "model": "auth.group",
+        "pk": 4
+    },
+    {
+        "fields": {
+            "name": "SGA",
+            "permissions": []
+        },
+        "model": "auth.group",
+        "pk": 5
+    },
+    {
+        "fields": {
+            "name": "ABC",
+            "permissions": []
+        },
+        "model": "auth.group",
+        "pk": 6
+    },
+    {
+        "fields": {
+            "name": "SGB",
+            "permissions": []
+        },
+        "model": "auth.group",
+        "pk": 7
+    },
+    {
+        "fields": {
+            "name": "CSGB",
+            "permissions": []
+        },
+        "model": "auth.group",
+        "pk": 8
+    },
+    {
+        "fields": {
+            "name": "IGC",
+            "permissions": []
+        },
+        "model": "auth.group",
+        "pk": 9
+    },
+    {
+        "fields": {
+            "name": "CI",
+            "permissions": []
+        },
+        "model": "auth.group",
+        "pk": 10
+    },
+    {
+        "fields": {
+            "group_type": "CNCL",
+            "full_name": "Engineering Student Council",
+            "editors": []
+        },
+        "model": "jccc.groupprofile",
+        "pk": 2
+    },
+    {
+        "fields": {
+            "group_type": "CNCL",
+            "full_name": "Columbia College Student Council",
+            "editors": []
+        },
+        "model": "jccc.groupprofile",
+        "pk": 3
+    },
+    {
+        "fields": {
+            "group_type": "CNCL",
+            "full_name": "General Studies Student Council",
+            "editors": []
+        },
+        "model": "jccc.groupprofile",
+        "pk": 4
+    },
+    {
+        "fields": {
+            "group_type": "CNCL",
+            "full_name": "Student Government Association",
+            "editors": []
+        },
+        "model": "jccc.groupprofile",
+        "pk": 5
+    },
+    {
+        "fields": {
+            "group_type": "GBRD",
+            "full_name": "Activities Board at Columbia",
+            "editors": []
+        },
+        "model": "jccc.groupprofile",
+        "pk": 6
+    },
+    {
+        "fields": {
+            "group_type": "GBRD",
+            "full_name": "Student Governing Board",
+            "editors": []
+        },
+        "model": "jccc.groupprofile",
+        "pk": 7
+    },
+    {
+        "fields": {
+            "group_type": "GBRD",
+            "full_name": "Club Sports Governing Board",
+            "editors": []
+        },
+        "model": "jccc.groupprofile",
+        "pk": 8
+    },
+    {
+        "fields": {
+            "group_type": "GBRD",
+            "full_name": "Inter Greek Council",
+            "editors": []
+        },
+        "model": "jccc.groupprofile",
+        "pk": 9
+    },
+    {
+        "fields": {
+            "group_type": "GBRD",
+            "full_name": "Community Impact",
+            "editors": []
+        },
+        "model": "jccc.groupprofile",
+        "pk": 10
+    }
 ]

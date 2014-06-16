@@ -5,7 +5,6 @@ from django.db import models, migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('jccc', '0007_escprojectgrantapplication'),
     ]
@@ -14,7 +13,9 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='JCCCApplication',
             fields=[
-                ('fundingrequest_ptr', models.OneToOneField(auto_created=True, primary_key=True, to_field='id', serialize=False, to='jccc.FundingRequest')),
+                ('fundingrequest_ptr',
+                 models.OneToOneField(auto_created=True, primary_key=True, to_field='id',
+                                      serialize=False, to='jccc.FundingRequest')),
                 ('description', models.TextField(blank=True)),
                 ('event_name', models.CharField(max_length=128)),
                 ('event_time', models.DateTimeField()),

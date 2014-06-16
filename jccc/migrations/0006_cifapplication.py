@@ -6,7 +6,6 @@ import jsonfield.fields
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('jccc', '0005_attachedfile'),
     ]
@@ -15,7 +14,9 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='CIFApplication',
             fields=[
-                ('fundingrequest_ptr', models.OneToOneField(auto_created=True, primary_key=True, to_field='id', serialize=False, to='jccc.FundingRequest')),
+                ('fundingrequest_ptr',
+                 models.OneToOneField(auto_created=True, primary_key=True, to_field='id',
+                                      serialize=False, to='jccc.FundingRequest')),
                 ('description', models.TextField(blank=True)),
                 ('financial_history', models.TextField(blank=True)),
                 ('roadblock', models.TextField(blank=True)),

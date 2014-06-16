@@ -10,6 +10,7 @@ html {
 a {
     cursor: pointer;
 }
+
 .dropdown-menu {
     outline: none;
 }
@@ -27,6 +28,7 @@ a {
     height: 600px;
     padding-bottom: 20px;
 }
+
 .col-md-6 .chart {
     width: 600px;
     height: 400px;
@@ -128,54 +130,62 @@ supports grid feature
 }
 
 table {
-	background: white;
-	margin-bottom: 1.25rem;
-	border: solid 1px #dddddd;
-	width: 100%;
+    background: white;
+    margin-bottom: 1.25rem;
+    border: solid 1px #dddddd;
+    width: 100%;
 }
+
 table caption {
-	background: transparent;
-	color: #222222;
-	font-size: 1rem;
-	font-weight: bold;
+    background: transparent;
+    color: #222222;
+    font-size: 1rem;
+    font-weight: bold;
 }
+
 table thead {
-	background: whitesmoke;
+    background: whitesmoke;
 }
+
 table thead tr th,
 table thead tr td {
-	padding: 0.5rem 0.625rem 0.625rem;
-	font-size: 0.875rem;
-	font-weight: bold;
-	color: #222222;
+    padding: 0.5rem 0.625rem 0.625rem;
+    font-size: 0.875rem;
+    font-weight: bold;
+    color: #222222;
 }
+
 table tfoot {
-	background: whitesmoke; 
+    background: whitesmoke;
 }
+
 table tfoot tr th,
 table tfoot tr td {
-	padding: 0.5rem 0.625rem 0.625rem;
-	font-size: 0.875rem;
-	font-weight: bold;
-	color: #222222;
+    padding: 0.5rem 0.625rem 0.625rem;
+    font-size: 0.875rem;
+    font-weight: bold;
+    color: #222222;
 }
+
 table tr th,
 table tr td {
-	padding: 0.5625rem 0.625rem;
-	font-size: 0.875rem;
-	color: #222222;
-	text-align: left;
+    padding: 0.5625rem 0.625rem;
+    font-size: 0.875rem;
+    color: #222222;
+    text-align: left;
 }
+
 table tr.even, table tr.alt, table tr:nth-of-type(even) {
-	background: #f9f9f9;
+    background: #f9f9f9;
 }
+
 table thead tr th,
 table tfoot tr th,
 table tfoot tr td,
 table tbody tr th,
 table tbody tr td,
 table tr td {
-	display: table-cell;
-	line-height: 1.125rem;
+    display: table-cell;
+    line-height: 1.125rem;
 }
 

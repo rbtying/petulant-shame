@@ -6,7 +6,6 @@ import jsonfield.fields
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('jccc', '0006_cifapplication'),
     ]
@@ -15,7 +14,9 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='ESCProjectGrantApplication',
             fields=[
-                ('fundingrequest_ptr', models.OneToOneField(auto_created=True, primary_key=True, to_field='id', serialize=False, to='jccc.FundingRequest')),
+                ('fundingrequest_ptr',
+                 models.OneToOneField(auto_created=True, primary_key=True, to_field='id',
+                                      serialize=False, to='jccc.FundingRequest')),
                 ('members', jsonfield.fields.JSONField(default=[])),
                 ('description', models.TextField(blank=True)),
                 ('materials', jsonfield.fields.JSONField(default=[])),

@@ -10,7 +10,7 @@
  R.Christian
 
  */
-var NotificationManager = function(scope) {
+var NotificationManager = function (scope) {
 
     // notification queue
     scope.notifications = [];  // WARN:  Don't change this variable name, it's coupled to scope and outside of this function.
@@ -18,8 +18,8 @@ var NotificationManager = function(scope) {
     // remove processed notifications
     this.sweepNotifications = function () {
 
-        for (var i=0; i < scope.notifications.length; i++) {
-            if(scope.notifications[i].processed == true) {
+        for (var i = 0; i < scope.notifications.length; i++) {
+            if (scope.notifications[i].processed == true) {
                 scope.notifications = scope.notifications.splice(i, 0);
                 i = i + 1;
                 continue;
@@ -29,7 +29,7 @@ var NotificationManager = function(scope) {
     }
 
     // add notification to model
-    this.notify = function(type, text) {
+    this.notify = function (type, text) {
 
         // convenient place to say "while we're
         // here, clear all processed notifications

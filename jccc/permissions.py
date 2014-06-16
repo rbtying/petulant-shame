@@ -1,96 +1,96 @@
+import functools
+
 from rest_framework import permissions
-from django.contrib.auth.models import Group, User, AnonymousUser
+from django.contrib.auth.models import AnonymousUser
+
 from models import *
-import json
+
+
+def ro(fn):
+    @functools.wraps(fn)
+    def readonly_fn(self, *args, **kwargs):
+        req = args[0]
+        if req.method in permissions.SAFE_METHODS:
+            return True
+        elif isinstance(req.user, AnonymousUser):
+            return False
+
+        return fn(self, *args, **kwargs)
+
+    return readonly_fn
+
+
+def is_student_government(user):
+    groups = user.groups.all()
+    for group in groups:
+        if group.groupprofile.group_type in (
+        GroupProfile.COUNCIL_GROUP_TYPE, GroupProfile.GOV_BOARD_GROUP_TYPE):
+            return True
+    return True
+
 
 class ReadOnly(permissions.BasePermission):
-	def has_permission(self, request, view):
-		if request.method in permissions.SAFE_METHODS:
-			return True
-		return False
+    @ro
+    def has_permission(self, request, view):
+        return False
+
 
 class CouncilAndReadOnly(permissions.BasePermission):
-	def has_permission(self, request, view):
-		if request.method in permissions.SAFE_METHODS:
-			return True
-		else:
-			if isinstance(request.user, AnonymousUser):
-				return False
+    @ro
+    def has_permission(self, request, view):
+        return request.user.on_council()
 
-			return request.user.on_council()
 
 class GoverningBoardAndReadOnly(permissions.BasePermission):
-	def has_permission(self, request, view):
-		if request.method in permissions.SAFE_METHODS:
-			return True
-		else:
-			if isinstance(request.user, AnonymousUser):
-				return False
+    @ro
+    def has_permission(self, request, view):
+        groups = request.user.groups.all()
+        for group in groups:
+            if group.groupprofile.group_type == GroupProfile.GOV_BOARD_GROUP_TYPE:
+                return True
+        return False
 
-			groups = request.user.groups.all()
-			for group in groups:
-				if group.groupprofile.group_type == GroupProfile.GOV_BOARD_GROUP_TYPE:
-					return True
-			return False
 
 class StudentGovernmentAndReadOnly(permissions.BasePermission):
-	def has_permission(self, request, view):
-		if request.method in permissions.SAFE_METHODS:
-			return True
-		else:
-			if isinstance(request.user, AnonymousUser):
-				return False
+    @ro
+    def has_permission(self, request, view):
+        return is_student_government(request.user)
 
-			if request.user.on_council():
-				return True
-
-			groups = request.user.groups.all()
-			for group in groups:
-				if group.groupprofile.group_type == GroupProfile.GOV_BOARD_GROUP_TYPE:
-					return True
-			return False
 
 class GroupMember(permissions.BasePermission):
-	def has_object_permission(self, request, view, obj):
-		if isinstance(request.user, AnonymousUser):
-			return False
+    @ro
+    def has_object_permission(self, request, view, obj):
+        try:
+            request.user.groups.get(pk=obj.pk)
+            return True
+        except Group.DoesNotExist:
+            return False
 
-		try:
-			request.user.groups.get(pk=obj.pk)
-			return True
-		except Group.DoesNotExist:
-			return False
-
-		return False
 
 class IsEditor(permissions.BasePermission):
-	def has_permission(self, request, view):
-		if request.method in permissions.SAFE_METHODS:
-			return True
+    @ro
+    def has_permission(self, request, view):
+        if isinstance(request.user, AnonymousUser):
+            return False
+        if is_student_government(request.user):
+            return True
 
-		if isinstance(request.user, AnonymousUser):
-			return False
+    @ro
+    def has_object_permission(self, request, view, obj):
+        if is_student_government(request.user):
+            return True
 
-		if request.method == 'POST':
-			return True
+        editor_list = obj.editors
+        if request.user.username in editor_list:
+            return True
 
-		if request.user.on_council():
-			return True
+        return False
 
-		groups = request.user.groups.all()
-		for group in groups:
-			if group.groupprofile.group_type == GroupProfile.GOV_BOARD_GROUP_TYPE:
-				return True
 
-		return False
-
-	def has_object_permissions(self, request, view, obj):
-		if isinstance(request.user, AnonymousUser):
-			return False
-		try:
-			editor_list = obj.editor
-			if request.user.username in editor_list:
-				return True
-		except ValueError:
-			return False
-		return False
+class IsEditorNoPost(IsEditor):
+    @ro
+    def has_permission(self, request, view):
+        ret = super(IsEditorNoPost, self).has_permission(request, view)
+        if ret and view.action == 'list':
+            return False
+        return ret

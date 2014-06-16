@@ -3,7 +3,7 @@
 directives.directive('noty', function () {
 
     return {
-        restrict:'A',
+        restrict: 'A',
 
         link: function (scope, element, attr) {
 
@@ -25,10 +25,14 @@ directives.directive('noty', function () {
                 maxVisible: 5, // you can set max visible notification for dismissQueue true option
                 closeWith: ['click'], // ['click', 'button', 'hover']
                 callback: {
-                    onShow: function() {},
-                    afterShow: function() {},
-                    onClose: function() {},
-                    afterClose: function() {}
+                    onShow: function () {
+                    },
+                    afterShow: function () {
+                    },
+                    onClose: function () {
+                    },
+                    afterClose: function () {
+                    }
                 },
                 buttons: false // an array of buttons
             };

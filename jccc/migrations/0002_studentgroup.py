@@ -6,7 +6,6 @@ import jsonfield.fields
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('jccc', '0001_initial'),
         ('auth', '__first__'),
@@ -16,7 +15,8 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='StudentGroup',
             fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True,
+                                        primary_key=True)),
                 ('name', models.CharField(max_length=256)),
                 ('governing_board', models.ForeignKey(to='auth.Group', to_field='id', null=True)),
                 ('proportion_cc', models.FloatField(default=0.0)),
