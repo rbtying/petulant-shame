@@ -1,0 +1,76 @@
+{% verbatim %}
+<div class="row">
+    <div class="col-md-12">
+        <button type="button"
+            class="btn btn-default"
+            ng-model="db.currentYear"
+            ng-options="y for y in db.years"
+            data-trigger="click"
+            style="margin-top: 1em"
+            bs-select>
+            Year <span class="caret"></span>
+        </button>
+    </div>
+    <div class="col-md-6">
+        <h4>Board Allocations</h4>
+        <div ng-if="db.allocations[db.currentYear].allocations">
+            <table class="table">
+                <thead>
+                    <tr><th>Group</th><th>Allocation</th></tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="alloc in db.allocations[db.currentYear].allocations">
+                        <td>{{alloc.board}}</td>
+                        <td>{{alloc.allocation | currency: '$'}}</td>
+                    </tr>
+                    <tr>
+                        <td>Total</td>
+                        <td>{{ db.allocations[db.currentYear].allocations | sumalloc | currency: '$'}}</td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                </tfoot>
+            </table>
+            <div ac-chart="'pie'" ac-data="db.plot.allocation_pie[db.currentYear]" ac-config="{'legend': {'display': true, 'position': 'right'}}" class="chart"></div>
+        </div>
+        <p ng-if="!db.allocations[db.currentYear].allocations">
+            No data available
+        </p>
+    </div>
+    <div class="col-md-6">
+        <h4>Council Funding Ratio</h4>
+        <div ng-if="db.allocations[db.currentYear].ratio">
+            <table class="table">
+                <thead>
+                    <tr><th>Council</th><th>Ratio</th></tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="(council, ratio) in db.allocations[db.currentYear].ratio">
+                        <td>{{council}}</td>
+                        <td>{{ratio}}</td>
+                    </tr>
+                    <tr>
+                        <td>Total</td>
+                        <td>{{ db.allocations[db.currentYear].ratio | sumvals }}</td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                </tfoot>
+            </table>
+            <div ac-chart="'pie'" ac-data="db.plot.ratio_pie[db.currentYear]" ac-config="{'legend': {'display': true, 'position': 'right'}}" class="chart"></div>
+        </div>
+        <p ng-if="!db.allocations[db.currentYear].ratio">
+            No data available
+        </p>
+    </div>
+
+    <div class="col-md-12" ng-if="db.allocations[db.currentYear].supplement">
+        <h4>Supplements</h4>
+        <ul>
+            <li ng-repeat="supp in db.allocations[db.currentYear].supplement">
+                <a ng-href="{{supp.href}}">{{supp.text}}</a>
+            </li>
+        </ul>
+    </div>
+</div>
+{% endverbatim %}

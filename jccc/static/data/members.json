@@ -1,0 +1,296 @@
+{
+    "Spring 2011": [
+            {
+                "name": "Learned Foote",
+                "council": "CCSC",
+                "position": "President",
+                "outgoing": true
+            },
+            {
+                "name": "Aki Terasaki",
+                "council": "CCSC",
+                "position": "President-elect",
+                "outgoing": false
+            },
+            {
+                "name": "Brandon Christophe",
+                "council": "CCSC",
+                "position": "VP Funding",
+                "outgoing": true
+            },
+            {
+                "name": "Kevin Zhai",
+                "council": "CCSC",
+                "position": "VP Funding-elect",
+                "outgoing": false
+            },
+            {
+                "name": "Christopher Elizondo",
+                "council": "ESC",
+                "position": "President",
+                "outgoing": true
+            },
+            {
+                "name": "Nate Levick",
+                "council": "ESC",
+                "position": "President-elect",
+                "outgoing": false
+            },
+            {
+                "name": "Narayan Subramanian",
+                "council": "ESC",
+                "position": "VP Intergroup",
+                "outgoing": true
+            },
+            {
+                "name": "Frank Yin",
+                "council": "ESC",
+                "position": "VP Intergroup-elect",
+                "outgoing": false
+            },
+            {
+                "name": "Jacqueline Thong",
+                "council": "GSSC",
+                "position": "President",
+                "outgoing": true
+            },
+            {
+                "name": "Jacqueline Thong",
+                "council": "GSSC",
+                "position": "President-elect",
+                "outgoing": false
+            },
+            {
+                "name": "Daniel Lagana",
+                "council": "GSSC",
+                "position": "Treasurer",
+                "outgoing": true
+            },
+            {
+                "name": "Josh Lewin-Jacus",
+                "council": "GSSC",
+                "position": "Treasurer-elect",
+                "outgoing": false
+            },
+            {
+                "name": "Lara Asvar",
+                "council": "SGA",
+                "position": "President",
+                "outgoing": true
+            },
+            {
+                "name": "Jessica Blake",
+                "council": "SGA",
+                "position": "President-elect",
+                "outgoing": false
+            },
+            {
+                "name": "Priyata Patel",
+                "council": "SGA",
+                "position": "VP Finance",
+                "outgoing": true
+            },
+            {
+                "name": "Camila Daniels",
+                "council": "SGA",
+                "position": "VP Finance-elect",
+                "outgoing": false
+            }
+        ],
+    "Spring 2010": [
+            {
+                "name": "Sue Yang",
+                "council": "CCSC",
+                "position": "President",
+                "outgoing": true
+            },
+            {
+                "name": "Learned Foote",
+                "council": "CCSC",
+                "position": "President-elect",
+                "outgoing": false
+            },
+            {
+                "name": "Nuriel Moghavem",
+                "council": "CCSC",
+                "position": "VP Funding",
+                "outgoing": true
+            },
+            {
+                "name": "Brandon Christophe",
+                "council": "CCSC",
+                "position": "VP Funding-elect",
+                "outgoing": false
+            },
+            {
+                "name": "Whitney Green",
+                "council": "ESC",
+                "position": "President",
+                "outgoing": true
+            },
+            {
+                "name": "Christopher Elizondo",
+                "council": "ESC",
+                "position": "President-elect",
+                "outgoing": false
+            },
+            {
+                "name": "Gunnar Aasen",
+                "council": "ESC",
+                "position": "VP Intergroup",
+                "outgoing": true
+            },
+            {
+                "name": "Narayan Subramanian",
+                "council": "ESC",
+                "position": "VP Intergroup-elect",
+                "outgoing": false
+            },
+            {
+                "name": "Katherine Edwards",
+                "council": "GSSC",
+                "position": "President",
+                "outgoing": true
+            },
+            {
+                "name": "Jacqueline Thong",
+                "council": "GSSC",
+                "position": "President-elect",
+                "outgoing": false
+            },
+            {
+                "name": "Jacqueline Thong",
+                "council": "GSSC",
+                "position": "Treasurer",
+                "outgoing": true
+            },
+            {
+                "name": "Daniel Lagana",
+                "council": "GSSC",
+                "position": "Treasurer-elect",
+                "outgoing": false
+            },
+            {
+                "name": "Katie Palillo",
+                "council": "SGA",
+                "position": "President",
+                "outgoing": true
+            },
+            {
+                "name": "Lara Avsar",
+                "council": "SGA",
+                "position": "President-elect",
+                "outgoing": false
+            },
+            {
+                "name": "Sharmin Ahmed",
+                "council": "SGA",
+                "position": "VP Finance",
+                "outgoing": true
+            },
+            {
+                "name": "Priyata Patel",
+                "council": "SGA",
+                "position": "VP Finance-elect",
+                "outgoing": false
+            }
+        ],
+    "Spring 2009": [
+            {
+                "name": "George Krebs",
+                "council": "CCSC",
+                "position": "President",
+                "outgoing": true
+            },
+            {
+                "name": "Sue Yang",
+                "council": "CCSC",
+                "position": "President-elect",
+                "outgoing": false
+            },
+            {
+                "name": "Laura Doan",
+                "council": "CCSC",
+                "position": "VP Funding",
+                "outgoing": true
+            },
+            {
+                "name": "Nuriel Moghavem",
+                "council": "CCSC",
+                "position": "VP Funding-elect",
+                "outgoing": false
+            },
+            {
+                "name": "Peter Valeiras",
+                "council": "ESC",
+                "position": "President",
+                "outgoing": true
+            },
+            {
+                "name": "Whitney Green",
+                "council": "ESC",
+                "position": "President-elect",
+                "outgoing": false
+            },
+            {
+                "name": "Lauren Minches",
+                "council": "ESC",
+                "position": "VP Intergroup",
+                "outgoing": true
+            },
+            {
+                "name": "Gunnar Aasen",
+                "council": "ESC",
+                "position": "VP Intergroup-elect",
+                "outgoing": false
+            },
+            {
+                "name": "Brody Berg",
+                "council": "GSSC",
+                "position": "President",
+                "outgoing": true
+            },
+            {
+                "name": "Katherine Edwards",
+                "council": "GSSC",
+                "position": "President-elect",
+                "outgoing": false
+            },
+            {
+                "name": "Eleanor Colley",
+                "council": "GSSC",
+                "position": "Treasurer",
+                "outgoing": true
+            },
+            {
+                "name": "Jacqueline Thong",
+                "council": "GSSC",
+                "position": "Treasurer-elect",
+                "outgoing": false
+            },
+            {
+                "name": "Sarah Besnoff",
+                "council": "SGA",
+                "position": "President",
+                "outgoing": true
+            },
+            {
+                "name": "Katie Palillo",
+                "council": "SGA",
+                "position": "President-elect",
+                "outgoing": false
+            },
+            {
+                "name": "Amy Chen",
+                "council": "SGA",
+                "position": "VP Finance",
+                "outgoing": true
+            },
+            {
+                "name": "Sharmin Ahmed",
+                "council": "SGA",
+                "position": "VP Finance-elect",
+                "outgoing": false
+            }
+        ]
+}

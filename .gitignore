@@ -1,0 +1,4 @@
+.*.swp
+~*
+*.pyc
+fundingapp/local_settings.py

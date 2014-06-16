@@ -1,0 +1,16 @@
+Django==1.7b4
+Markdown==2.4
+argparse==1.2.1
+django-extensions==1.3.3
+django-filter==0.7
+django-jsonfield==0.9.12
+django-mptt==0.6.0
+django-social-auth==0.7.28
+djangorestframework==2.3.13
+drf-any-permissions==0.0.1
+httplib2==0.9
+oauth2==1.5.211
+psycopg2==2.5.2
+python-openid==2.2.5
+six==1.6.1
+wsgiref==0.1.2
