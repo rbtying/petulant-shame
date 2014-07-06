@@ -1,0 +1,36 @@
+<div class="container" fade-in>
+    <div class="row">
+        <div class="col-md-12">
+            <h1 ng-bind="student_group.name"></h1>
+            <h2 ng-bind="student_group.governing_board.name"></h2>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <h3>Mission</h3>
+            <p>{{ student_group.mission }}</p>
+        </div>
+        <div class="col-md-6">
+            <h3><a href="#/student_groups/{{ student_group.id }}/members">Members</a></h3>
+            <div ac-chart="'pie'"
+                 ac-data="plot_data"
+                 ac-config="plot_config"
+                 class="chart"></div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <h3>Account Numbers</h3>
+            <p ng-show="student_group.sga_acct_number">
+                <strong>SGA</strong>: {{ student_group.sga_acct_number }}
+            </p>
+            <p ng-show="student_group.cu_acct_number">
+                <strong>CU (account, department, project):</strong>
+                {{ student_group.cu_acct_number }},
+                {{ student_group.cu_dept_number }},
+                {{ student_group.cu_proj_number }}
+            </p>
+
+        </div>
+    </div>
+</div>

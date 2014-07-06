@@ -138,7 +138,7 @@ facu.factory('API',
             });
         };
         api_calls.student_groups.set_editors = function (id, editors) {
-            $log.debug('setting editors for group ' + id);
+            $log.debug('setting editors for student_group ' + id);
             return $http({
                 url: baseurl + student_groups + id + '/set_editors/',
                 method: 'POST',

@@ -23,34 +23,39 @@ facu.config(['$routeProvider', '$locationProvider', '$httpProvider', function ($
     // $locationProvider.html5Mode(true);
 
     $routeProvider.when('/', {
-        templateUrl: 'partials/home.html'
+        templateUrl: '/static/partials/home.html'
     });
     $routeProvider.when('/admin', {
-        templateUrl: 'partials/admin.html'
+        templateUrl: '/static/partials/admin.html',
+        controller: 'adminCtrl'
     });
     $routeProvider.when('/about', {
-        templateUrl: 'partials/about.html'
+        templateUrl: '/static/partials/about.html'
     });
     $routeProvider.when('/allocations', {
-        templateUrl: 'partials/allocations.html'
+        templateUrl: '/static/partials/allocations.html'
     });
     $routeProvider.when('/groups/:id', {
-        controller: 'groupsCtrl',
-        templateUrl: 'partials/groups.html'
+        controller: 'groupCtrl',
+        templateUrl: '/static/partials/group.html'
     });
     $routeProvider.when('/groups/:id/members', {
-        templateUrl: 'partials/members.html',
+        templateUrl: '/static/partials/members.html',
         controller: 'membersCtrl',
         resolve: {
             'group_unit': function() {return 'groups'}
         }
     });
+    $routeProvider.when('/student_groups', {
+        controller: 'studentGroupListCtrl',
+        templateUrl: '/static/partials/student_group_list.html'
+    });
     $routeProvider.when('/student_groups/:id', {
-        controller: 'studentGroupsCtrl',
-        templateUrl: 'partials/student_groups.html'
+        controller: 'studentGroupCtrl',
+        templateUrl: '/static/partials/student_group.html'
     });
     $routeProvider.when('/student_groups/:id/members', {
-        templateUrl: 'partials/members.html',
+        templateUrl: '/static/partials/members.html',
         controller: 'membersCtrl',
         resolve: {
             'group_unit': function() {return 'student_groups'}

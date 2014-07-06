@@ -1,0 +1,52 @@
+<div class="container" fade-in>
+    <div class="row">
+        <div class="col-md-12">
+            <h1>Control Panel</h1>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <h2>Councils</h2>
+            <table>
+                <tr>
+                    <th>Name</th>
+                    <th>Members</th>
+                </tr>
+                <tr ng-repeat="g in groups | filter:{'groupprofile.group_type': 'CNCL'}">
+                    <td>
+                        <a ng-href="#/groups/{{ g.id }}">{{ g.name }}</a>
+                    </td>
+                    <td>
+                        <a ng-href="#/groups/{{ g.id }}/members">
+                            {{ g.user_set.length + g.groupprofile.editors.length }}
+                        </a>
+                    </td>
+                </tr>
+
+            </table>
+        </div>
+        <div class="col-md-6">
+            <h2>Governing Boards</h2>
+            <table>
+                <tr>
+                    <th>Name</th>
+                    <th>Student Groups</th>
+                    <th>Members</th>
+                </tr>
+                <tr ng-repeat="g in groups | filter:{'groupprofile.group_type': 'GBRD'}">
+                    <td>
+                        <a ng-href="#/groups/{{ g.id }}">{{ g.name }}</a>
+                    </td>
+                    <td>
+                        <a ng-href="#/student_groups?governing_board__id={{ g.id }}">{{ g.studentgroup_set.length }}</a>
+                    </td>
+                    <td>
+                        <a ng-href="#/groups/{{ g.id }}/members">
+                            {{ g.user_set.length + g.groupprofile.editors.length }}
+                        </a>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>

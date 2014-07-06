@@ -112,9 +112,9 @@ REST_FRAMEWORK = {
 	'DEFAULT_PERMISSION_CLASSES': ['jccc.permissions.ReadOnly'],
 	'DEFAULT_FILTER_BACKENDS': ('rest_framework.filters.DjangoFilterBackend',),
 	'DEFAULT_AUTHENTICATION_CLASSES': (	'rest_framework.authentication.SessionAuthentication',),
-	'PAGINATE_BY': 10,
+	'PAGINATE_BY': 1000,
 	'PAGINATE_BY_PARAM': 'page_size',
-	'MAX_PAGINATE_BY': 100
+	'MAX_PAGINATE_BY': 10000
 }
 
 # Static files (CSS, JavaScript, Images)

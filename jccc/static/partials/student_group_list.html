@@ -1,0 +1,26 @@
+<div class="container" fade-in>
+    <div class="row">
+        <div class="col-md-12">
+            <h1>Student Groups</h1>
+            <table class="table table-bordered">
+                <tr>
+                    <th>Name</th>
+                    <th>Editors</th>
+                    <th>Governing Board</th>
+                </tr>
+                <tr ng-repeat="sg in student_groups">
+                    <td>
+                        <a ng-href="#/student_groups/{{ sg.id }}">{{ sg.name }}</a>
+                    </td>
+                    <td>
+                        <a ng-href="#/student_groups/{{ sg.id }}/members">{{ sg.editors.length }}</a>
+                    </td>
+                    <td>
+                        <a ng-href="#/groups/{{ sg.governing_board.id }}">{{ sg.governing_board.name }}</a>
+                    </td>
+                </tr>
+            </table>
+
+        </div>
+    </div>
+</div>

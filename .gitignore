@@ -3,3 +3,4 @@
 *.pyc
 fundingapp/local_settings.py
 funding
+.idea/
