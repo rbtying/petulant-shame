@@ -49,7 +49,7 @@ class AllocationSerializer(serializers.ModelSerializer):
 
 
 class StudentGroupSerializer(serializers.ModelSerializer):
-    allocation = AllocationSerializer(source='allocation')
+    allocation = AllocationSerializer(source='allocation', read_only=True)
 
     @staticmethod
     def check_float_range(value):

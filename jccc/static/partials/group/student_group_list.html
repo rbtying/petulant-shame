@@ -2,13 +2,15 @@
     <div class="row">
         <div class="col-md-12">
             <h1>Student Groups</h1>
+            <a class="btn btn-default" href="#/student_groups/new">Add new group</a>
             <table class="table table-bordered">
                 <tr>
                     <th>Name</th>
                     <th>Editors</th>
                     <th>Governing Board</th>
+                    <th>Allocation</th>
                 </tr>
-                <tr ng-repeat="sg in student_groups">
+                <tr ng-repeat="sg in db.student_groups">
                     <td>
                         <a ng-href="#/student_groups/{{ sg.id }}">{{ sg.name }}</a>
                     </td>
@@ -16,11 +18,13 @@
                         <a ng-href="#/student_groups/{{ sg.id }}/members">{{ sg.editors.length }}</a>
                     </td>
                     <td>
-                        <a ng-href="#/groups/{{ sg.governing_board.id }}">{{ sg.governing_board.name }}</a>
+                        <a ng-href="#/groups/{{ sg.governing_board }}">{{ db.groups_by_id[sg.governing_board].name }}</a>
+                    </td>
+                    <td>
+                        <a ng-href="#/allocations/?recipient_id={{ sg.id }}">{{ sg.allocation.value | currency }} ({{ sg.allocation.year }})</a>
                     </td>
                 </tr>
             </table>
-
         </div>
     </div>
 </div>

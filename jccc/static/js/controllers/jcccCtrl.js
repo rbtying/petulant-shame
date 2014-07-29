@@ -101,22 +101,6 @@ controllers
                         get_specific();
                     });
             }
-//            Dropbox.choose({
-//                success: function (files) {
-//                    $timeout(function () {
-//                        var promises = [];
-//                        for (var i in files) {
-//                            promises.push(API.jccc_app.upload_file($scope.db.current_application.id, files[i].name, files[i].link));
-//                        }
-//
-//                        $q.all(promises).then(function (results) {
-//                            $location.path('/jccc/' + $scope.db.current_application.id);
-//                            get_specific();
-//                        });
-//                    });
-//                },
-//                multiselect: true
-//            });
         };
 
         $scope.deleteFile = function (fid) {
@@ -155,9 +139,6 @@ controllers
             mutex = true;
 
             var copy = $.extend(true, {}, $scope.db.current_application);
-//            copy.attachments = copy.attachments.map(function (m, idx) {
-//                return m.id;
-//            });
             API.jccc_app.set($scope.db.current_application.id, copy)
                 .then(function (result) {
                     $scope.notify('info', 'Updated JCCC application #' + result.id);

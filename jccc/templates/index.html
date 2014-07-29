@@ -59,7 +59,7 @@
 
 {% verbatim %}
 <div class="notifications">
-    <div ng-repeat="msg in messages">
+    <div ng-repeat="msg in messages" ng-cloak>
         <div class="alert alert-{{ msg.type }}"> {{ msg.text }}
             <span class="glyphicon glyphicon-remove pull-right" ng-click="removeMessage($index);" style="cursor: pointer;"></span>
         </div>

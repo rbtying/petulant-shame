@@ -10,7 +10,6 @@ facu.config(['$routeProvider', '$locationProvider', '$httpProvider', function ($
         var defer = $q.defer();
         API.users.me()
             .then(function (result) {
-                API.users.update_groups(result.data.user.id);
                 defer.resolve(result.data.user);
             }, function (err) {
                 $log.error('could not get current user', err);
@@ -93,13 +92,13 @@ facu.config(['$routeProvider', '$locationProvider', '$httpProvider', function ($
     });
     $routeProvider.when('/groups/:id', {
         controller: 'groupCtrl',
-        templateUrl: '/static/partials/group.html',
+        templateUrl: '/static/partials/group/group.html',
         resolve: {
             'current_user': current_user_func
         }
     });
     $routeProvider.when('/groups/:id/members', {
-        templateUrl: '/static/partials/members.html',
+        templateUrl: '/static/partials/group/members.html',
         controller: 'membersCtrl',
         resolve: {
             'group_unit': function() {return 'groups'},
@@ -108,20 +107,37 @@ facu.config(['$routeProvider', '$locationProvider', '$httpProvider', function ($
     });
     $routeProvider.when('/student_groups', {
         controller: 'studentGroupListCtrl',
-        templateUrl: '/static/partials/student_group_list.html',
+        templateUrl: '/static/partials/group/student_group_list.html',
         resolve: {
             'current_user': current_user_func
+        }
+    });
+    $routeProvider.when('/student_groups/new', {
+        controller: 'studentGroupCtrl',
+        templateUrl: '/static/partials/group/student_group_edit.html',
+        resolve: {
+            'current_user': current_user_func,
+            'controller_action': function() {return 'new'}
+        }
+    });
+    $routeProvider.when('/student_groups/:id/edit', {
+        controller: 'studentGroupCtrl',
+        templateUrl: '/static/partials/group/student_group_edit.html',
+        resolve: {
+            'current_user': current_user_func,
+            'controller_action': function() {return 'edit'}
         }
     });
     $routeProvider.when('/student_groups/:id', {
         controller: 'studentGroupCtrl',
-        templateUrl: '/static/partials/student_group.html',
+        templateUrl: '/static/partials/group/student_group.html',
         resolve: {
-            'current_user': current_user_func
+            'current_user': current_user_func,
+            'controller_action': function() {return 'show'}
         }
     });
     $routeProvider.when('/student_groups/:id/members', {
-        templateUrl: '/static/partials/members.html',
+        templateUrl: '/static/partials/group/members.html',
         controller: 'membersCtrl',
         resolve: {
             'group_unit': function() {return 'student_groups'},
@@ -131,7 +147,7 @@ facu.config(['$routeProvider', '$locationProvider', '$httpProvider', function ($
 
     // by default, redirect to site root
     $routeProvider.otherwise({
-        redirectTo: '/'
+        redirectTo: '/about'
     });
 
 }]);

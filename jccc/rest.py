@@ -56,10 +56,11 @@ class UserViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.CouncilAndReadOnly,)
     filter_fields = ('username', 'groups', 'email')
 
-    @action()
-    def update_groups(self, request, *args, **kwargs):
-        if not request.user:
+    @link()
+    def me(self, request, *args, **kwargs):
+        if not request.user or isinstance(request.user, AnonymousUser):
             return Response({'error': 'Not logged in'}, status=403)
+
         groups = Group.objects.all()
         user_groups = request.user.groups.all()
         dirty = False
@@ -79,12 +80,6 @@ class UserViewSet(viewsets.ModelViewSet):
         if dirty:
             request.user.save()
 
-        return Response({'groups': GroupSerializer(request.user.groups.all()).data})
-
-    @link()
-    def me(self, request, *args, **kwargs):
-        if not request.user or isinstance(request.user, AnonymousUser):
-            return Response({'error': 'Not logged in'}, status=403)
         return Response({'user': UserSerializer(request.user).data})
 
 

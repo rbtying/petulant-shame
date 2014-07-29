@@ -106,5 +106,10 @@ class IsEditorNoPost(IsEditor):
     def has_permission(self, request, view):
         ret = super(IsEditorNoPost, self).has_permission(request, view)
         if ret and view.action == 'create':
+            if request.user.on_council:
+                return True
+            for g in request.user.groups:
+                if g.groupprofile.group_type == GroupProfile.GOV_BOARD_GROUP_TYPE:
+                    return True
             return False
         return ret

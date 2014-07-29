@@ -137,6 +137,7 @@ facu.factory('API',
                 data: editors
             });
         };
+
         api_calls.student_groups.set_editors = function (id, editors) {
             $log.debug('setting editors for student_group ' + id);
             return $http({
@@ -145,18 +146,12 @@ facu.factory('API',
                 data: editors
             });
         };
+
         api_calls.users.me = function () {
             $log.debug('getting current user');
             return $http({
                 url: baseurl + users + '0/me/',
                 method: 'GET'
-            });
-        };
-        api_calls.users.update_groups = function (id) {
-            $log.debug('updating user current groups', id);
-            return $http({
-                url: baseurl + users + id + '/update_groups/',
-                method: 'POST'
             });
         };
 
