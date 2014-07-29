@@ -108,7 +108,7 @@ LOGIN_ERROR_URL = '/login-error'
 SESSION_SERIALIZER = 'django.contrib.sessions.serializers.PickleSerializer'
 
 REST_FRAMEWORK = {
-	'DEFAULT_MODEL_SERIALIZER_CLASS': 'rest_framework.serializers.HyperlinkedModelSerializer',
+	'DEFAULT_MODEL_SERIALIZER_CLASS': 'rest_framework.serializers.ModelSerializer',
 	'DEFAULT_PERMISSION_CLASSES': ['jccc.permissions.ReadOnly'],
 	'DEFAULT_FILTER_BACKENDS': ('rest_framework.filters.DjangoFilterBackend',),
 	'DEFAULT_AUTHENTICATION_CLASSES': (	'rest_framework.authentication.SessionAuthentication',),

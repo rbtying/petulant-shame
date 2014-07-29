@@ -20,6 +20,12 @@ controllers
         API.student_groups.get($routeParams.id).then(function(data) {
             $scope.student_group = data;
 
+            API.alloc.list({
+                recipient: $scope.student_group.id
+            }).then(function (alloc) {
+                $scope.student_group.allocations = alloc.results;
+            });
+
             API.groups.get(data.governing_board).then(function(data) {
                 $scope.student_group.governing_board = data;
             });

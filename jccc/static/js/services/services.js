@@ -145,6 +145,94 @@ facu.factory('API',
                 data: editors
             });
         };
+        api_calls.users.me = function () {
+            $log.debug('getting current user');
+            return $http({
+                url: baseurl + users + '0/me/',
+                method: 'GET'
+            });
+        };
+        api_calls.users.update_groups = function (id) {
+            $log.debug('updating user current groups', id);
+            return $http({
+                url: baseurl + users + id + '/update_groups/',
+                method: 'POST'
+            });
+        };
+
+        api_calls.jccc_app.submit = function(id) {
+            $log.debug('submitting jccc app ', id);
+            return $http({
+                url: baseurl + jccc_app + id + '/submit/',
+                method: 'POST'
+            });
+        };
+
+        api_calls.jccc_app.schedule = function(id, schedule_date) {
+            $log.debug('scheduling jccc app ', id);
+            return $http({
+                url: baseurl + jccc_app + id + '/schedule/',
+                method: 'POST',
+                data: {
+                    'date': schedule_date
+                }
+            });
+        };
+
+        api_calls.jccc_app.approve = function(id, approval_amt, notes) {
+            $log.debug('approving jccc app ', id);
+            return $http({
+                url: baseurl + jccc_app + id + '/approve/',
+                method: 'POST',
+                data: {
+                    'amt': approval_amt,
+                    'notes': notes
+                }
+            });
+        };
+
+        api_calls.jccc_app.reject = function(id, notes) {
+            $log.debug('rejecting jccc app ', id);
+            return $http({
+                url: baseurl + jccc_app + id + '/reject/',
+                method: 'POST',
+                data: {
+                    'notes': notes
+                }
+            });
+        };
+
+        api_calls.jccc_app.endorse = function(id, endorsement) {
+            $log.debug('endorsing jccc app ', id);
+            return $http({
+                url: baseurl + jccc_app + id + '/endorse/',
+                method: 'POST',
+                data: {
+                    'endorsement': endorsement
+                }
+            });
+        };
+
+        api_calls.jccc_app.upload_file = function(id, filename, file) {
+            $log.debug('uploading file to app', id);
+            var data = {};
+            data[filename] = file;
+            return $http({
+                url: baseurl + jccc_app + id + '/upload_file/',
+                method: 'POST',
+                data: data
+            });
+        };
+
+        api_calls.jccc_app.delete_file = function(id, fileid) {
+            return $http({
+                url: baseurl + jccc_app + id + '/delete_file/',
+                method: 'POST',
+                data: {
+                    file: fileid
+                }
+            });
+        };
 
         return api_calls;
     }

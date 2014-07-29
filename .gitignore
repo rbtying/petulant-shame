@@ -1,6 +1,7 @@
 .*.swp
 ~*
 *.pyc
+.DS_Store
 fundingapp/local_settings.py
 funding
 .idea/

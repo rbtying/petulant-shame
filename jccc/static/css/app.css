@@ -129,63 +129,31 @@ supports grid feature
     min-width: 63px;
 }
 
-table {
-    background: white;
-    margin-bottom: 1.25rem;
-    border: solid 1px #dddddd;
-    width: 100%;
+.datepicker.dropdown-menu {
+    width: 250px;
+    height: 250px;
+}
+.datepicker.dropdown-menu button {
+    outline: none;
+    border: 0px;
+}
+.datepicker.dropdown-menu tbody {
+    height: 180px;
+}
+.datepicker.dropdown-menu tbody button {
+    padding: 6px;
+}
+.datepicker.dropdown-menu.datepicker-mode-1 tbody button, .datepicker.dropdown-menu.datepicker-mode-2 tbody button {
+    height: 65px;
 }
 
-table caption {
-    background: transparent;
-    color: #222222;
-    font-size: 1rem;
-    font-weight: bold;
+.timepicker.dropdown-menu {
+    padding: 0 4px;
 }
-
-table thead {
-    background: whitesmoke;
+.timepicker.dropdown-menu button {
+    outline: none;
+    border: 0px;
 }
-
-table thead tr th,
-table thead tr td {
-    padding: 0.5rem 0.625rem 0.625rem;
-    font-size: 0.875rem;
-    font-weight: bold;
-    color: #222222;
+.timepicker.dropdown-menu tbody button {
+    padding: 6px;
 }
-
-table tfoot {
-    background: whitesmoke;
-}
-
-table tfoot tr th,
-table tfoot tr td {
-    padding: 0.5rem 0.625rem 0.625rem;
-    font-size: 0.875rem;
-    font-weight: bold;
-    color: #222222;
-}
-
-table tr th,
-table tr td {
-    padding: 0.5625rem 0.625rem;
-    font-size: 0.875rem;
-    color: #222222;
-    text-align: left;
-}
-
-table tr.even, table tr.alt, table tr:nth-of-type(even) {
-    background: #f9f9f9;
-}
-
-table thead tr th,
-table tfoot tr th,
-table tfoot tr td,
-table tbody tr th,
-table tbody tr td,
-table tr td {
-    display: table-cell;
-    line-height: 1.125rem;
-}
-

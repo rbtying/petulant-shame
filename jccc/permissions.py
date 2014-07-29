@@ -72,10 +72,7 @@ class GroupMember(permissions.BasePermission):
 class IsEditor(permissions.BasePermission):
     @ro
     def has_permission(self, request, view):
-        if isinstance(request.user, AnonymousUser):
-            return False
-        if is_student_government(request.user):
-            return True
+        return True
 
     @ro
     def has_object_permission(self, request, view, obj):
@@ -88,10 +85,26 @@ class IsEditor(permissions.BasePermission):
         return False
 
 
+class IsEditorAndState(IsEditor):
+
+    @ro
+    def has_object_permission(self, request, view, obj):
+        if is_student_government(request.user):
+            return True
+
+        MUTABLE_STATES = (JCCCApplication.STATUS_PENDING, JCCCApplication.STATUS_SUBMITTED,
+                          JCCCApplication.STATUS_SCHEDULED)
+
+        if request.user.email in obj.editors and obj.status in MUTABLE_STATES:
+            return True
+
+        return False
+
+
 class IsEditorNoPost(IsEditor):
     @ro
     def has_permission(self, request, view):
         ret = super(IsEditorNoPost, self).has_permission(request, view)
-        if ret and view.action == 'list':
+        if ret and view.action == 'create':
             return False
         return ret

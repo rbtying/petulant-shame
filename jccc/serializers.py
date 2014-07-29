@@ -37,7 +37,20 @@ class StudentGroupPublicSerializer(serializers.ModelSerializer):
                   'proportion_seas', 'proportion_gs', 'proportion_grad')
 
 
+class AllocationSerializer(serializers.ModelSerializer):
+    def validate_year(self, attrs, source):
+        if attrs[source] < 0:
+            raise serializers.ValidationError('Year must be positive')
+        return attrs
+
+    class Meta:
+        model = Allocation
+        fields = ('id', 'value', 'source', 'recipient', 'year')
+
+
 class StudentGroupSerializer(serializers.ModelSerializer):
+    allocation = AllocationSerializer(source='allocation')
+
     @staticmethod
     def check_float_range(value):
         if value < 0 or value > 1.0:
@@ -84,19 +97,8 @@ class StudentGroupSerializer(serializers.ModelSerializer):
         fields = (
         'id', 'name', 'editors', 'governing_board', 'mission', 'proportion_cc', 'proportion_bc',
         'proportion_seas', 'proportion_gs', 'proportion_grad', 'sga_acct_number', 'cu_acct_number',
-        'cu_dept_number', 'cu_proj_number')
+        'cu_dept_number', 'cu_proj_number', 'allocation')
 
-
-class AllocationSerializer(serializers.ModelSerializer):
-    def validate_year(self, attrs, source):
-        if attrs[source] < 0:
-            raise serializers.ValidationError('Year must be positive')
-        return attrs
-
-    class Meta:
-        model = Allocation
-        fields = ('id', 'value', 'source', 'recipient', 'year')
-        depth = 1
 
 
 def validate_attrs(attrs):
@@ -114,7 +116,6 @@ def validate_attrs(attrs):
 class AttachedFileSerializer(serializers.ModelSerializer):
     class Meta:
         model = AttachedFile
-        depth = 1
 
 
 class FundingRequestSerializer(serializers.ModelSerializer):
@@ -132,11 +133,21 @@ class FundingRequestSerializer(serializers.ModelSerializer):
         'id', 'title', 'requested_amount', 'approved_amount', 'status', 'notes', 'created_time',
         'updated_time', 'submitted_time', 'scheduled_time', 'requester', 'funder', 'contact',
         'contact_phone', 'contact_position', 'editors', 'attachments')
-        depth = 1
 
 
 class JCCCApplicationSerializer(serializers.ModelSerializer):
-    attachments = AttachedFileSerializer(source='attachedfile_set')
+    def get_fields(self, *args, **kwargs):
+        fields = super(JCCCApplicationSerializer, self).get_fields(*args, **kwargs)
+        request = self.context.get('request', None)
+        view = self.context.get('view', None)
+        if request and view and getattr(view, 'object', None):
+            if not request.user.on_council():
+                fields['status'].read_only = True
+                fields['notes'].read_only = True
+                fields['approved_amount'].read_only = True
+                fields['endorsement'].read_only = True
+
+        return fields
 
     def validate_editors(self, attrs, source):
         return check_json_list(attrs, source)
@@ -162,11 +173,22 @@ class JCCCApplicationSerializer(serializers.ModelSerializer):
         'event_location', 'event_attendance', 'event_recurring', 'event_description',
         'event_advertisement', 'event_audience', 'current_balance', 'alternate_funding',
         'alternate_plans', 'advisor_advice', 'endorsement')
-        depth = 1
+        depth = 0
 
 
 class CIFApplicationSerializer(serializers.ModelSerializer):
     attachments = AttachedFileSerializer(source='attachedfile_set')
+
+    def get_fields(self, *args, **kwargs):
+        fields = super(CIFApplicationSerializer, self).get_fields(*args, **kwargs)
+        request = self.context.get('request', None)
+        view = self.context.get('view', None)
+        if request and view and getattr(view, 'object', None):
+            if not request.user.on_council():
+                fields['status'].read_only = True
+                fields['notes'].read_only = True
+                fields['approved_amount'].read_only = True
+        return fields
 
     def validate_editors(self, attrs, source):
         return check_json_list(attrs, source)
@@ -191,7 +213,6 @@ class CIFApplicationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CIFApplication
-        depth = 1
         fields = (
         'id', 'title', 'requested_amount', 'approved_amount', 'status', 'notes', 'created_time',
         'updated_time', 'submitted_time', 'scheduled_time', 'requester', 'funder', 'contact',
@@ -202,6 +223,17 @@ class CIFApplicationSerializer(serializers.ModelSerializer):
 
 class ESCProjectGrantApplicationSerializer(serializers.ModelSerializer):
     attachments = AttachedFileSerializer(source='attachedfile_set')
+
+    def get_fields(self, *args, **kwargs):
+        fields = super(ESCProjectGrantApplicationSerializer, self).get_fields(*args, **kwargs)
+        request = self.context.get('request', None)
+        view = self.context.get('view', None)
+        if request and view and getattr(view, 'object', None):
+            if not request.user.on_council():
+                fields['status'].read_only = True
+                fields['notes'].read_only = True
+                fields['approved_amount'].read_only = True
+        return fields
 
     def validate_editors(self, attrs, source):
         return check_json_list(attrs, source)

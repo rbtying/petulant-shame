@@ -20,6 +20,15 @@
     </div>
     <div class="row">
         <div class="col-md-6">
+            <h3>Allocations</h3>
+            <table class="table table-condensed">
+                <tr><th>Year</th><th>Amount</th></tr>
+                <tr ng-repeat="alloc in student_group.allocations">
+                    <td>{{ alloc.year }}</td>
+                    <td>{{ alloc.value | currency }}</td>
+                </tr>
+
+            </table>
             <h3>Account Numbers</h3>
             <p ng-show="student_group.sga_acct_number">
                 <strong>SGA</strong>: {{ student_group.sga_acct_number }}

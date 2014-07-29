@@ -41,7 +41,6 @@ class Partial(View):
         partial = kwargs.get('partial')
         templatepath = os.path.join('partials', partial)
 
-        print templatepath
         if not partial:
             return HttpResponse(status=404)
         try:

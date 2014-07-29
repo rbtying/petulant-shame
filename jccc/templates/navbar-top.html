@@ -14,8 +14,7 @@
         <ul class="nav navbar-nav">
             <li data-match-route="/about"><a href="#/about">About</a></li>
             <li data-match-route="/allocations"><a href="#/allocations">Allocations</a></li>
-            <li bs-dropdown="db.funds" data-placement="bottom" data-trigger="click"><a>Joint
-                Funds</a></li>
+            <li data-match-route="/jccc"><a href="#/jccc">JCCC</a></li>
         </ul>
         <div class="nav navbar-form pull-right">
             {% if user.is_authenticated %}
@@ -23,7 +22,7 @@
                 <a class="btn btn-primary" href="{% url 'logout' %}">
                     <i class="glyphicon glyphicon-off glyphicon-white"></i> Sign out</a>
             {% else %}
-                <a class="btn btn-primary" href="{% url 'socialauth_begin' 'google-oauth2' %}">
+                <a id="login" class="btn btn-primary" href="{% url 'socialauth_begin' 'google-oauth2' %}">
                     <i class="glyphicon glyphicon-user glyphicon-white"></i> Sign in</a>
             {% endif %}
         </div>

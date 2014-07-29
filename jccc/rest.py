@@ -1,15 +1,17 @@
 from rest_framework import viewsets, views
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.parsers import MultiPartParser
-from rest_framework.decorators import action
+from rest_framework.decorators import action, link
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
+from django.contrib.auth.models import AnonymousUser
 import django_filters
 
 from serializers import *
 from models import *
 import permissions
 import datetime
+import dateutil.parser
 
 
 class FileUploadView(views.APIView):
@@ -78,6 +80,12 @@ class UserViewSet(viewsets.ModelViewSet):
             request.user.save()
 
         return Response({'groups': GroupSerializer(request.user.groups.all()).data})
+
+    @link()
+    def me(self, request, *args, **kwargs):
+        if not request.user or isinstance(request.user, AnonymousUser):
+            return Response({'error': 'Not logged in'}, status=403)
+        return Response({'user': UserSerializer(request.user).data})
 
 
 class GroupViewSet(viewsets.ModelViewSet):
@@ -235,13 +243,29 @@ class FundingRequestViewSet(viewsets.ModelViewSet):
                       'created_after', 'created_before', 'submitted_after', 'submitted_before',
                       'requester__id', 'funder__id')
 
+    @action()
+    def submit(self, request, pk=None, *args, **kwargs):
+        pass
+
+    @action()
+    def schedule(self, request, pk=None, *args, **kwargs):
+        pass
+
+    @action()
+    def approve(self, request, pk=None, *args, **kwargs):
+        pass
+
+    @action()
+    def deny(self, request, pk=None, *args, **kwargs):
+        pass
+
     filter_class = FundingFilter
 
 
 class JCCCApplicationViewSet(viewsets.ModelViewSet):
     queryset = JCCCApplication.objects.all()
     serializer_class = JCCCApplicationSerializer
-    permission_classes = (permissions.IsEditor,)
+    permission_classes = (permissions.IsEditorAndState,)
 
     class JCCCApplicationFilter(django_filters.FilterSet):
         min_requested = django_filters.NumberFilter(name='requested_amount', lookup_type='gte')
@@ -264,6 +288,109 @@ class JCCCApplicationViewSet(viewsets.ModelViewSet):
                       'requester__id', 'funder__id', 'contact__id')
 
     filter_class = JCCCApplicationFilter
+
+    @action()
+    def upload_file(self, request, pk=None, *args, **kwargs):
+        jccc_app = get_object_or_404(JCCCApplication.objects.all(), pk=pk)
+        uploaded_files = []
+        if request.user.email in jccc_app.editors:
+            for (k, v) in request.DATA.iteritems():
+                af = AttachedFile(request=jccc_app, name=k, attachment=v)
+                af.save()
+                uploaded_files.append(af.id)
+            return Response({'result': uploaded_files})
+        else:
+            return Response({'error': 'not authorized'}, status=403)
+
+    @action()
+    def delete_file(self, request, pk=None, *args, **kwargs):
+        jccc_app = get_object_or_404(JCCCApplication.objects.all(), pk=pk)
+        if request.user.email in jccc_app.editors and jccc_app.status == JCCCApplication.STATUS_PENDING:
+            fid = request.DATA.get('file')
+            af = get_object_or_404(AttachedFile.objects.all(), pk=fid)
+            af.delete()
+            return Response({'result': 'ok'})
+        else:
+            return Response({'error': 'not authorized'}, status=403)
+
+    @action()
+    def endorse(self, request, pk=None, *args, **kwargs):
+        jccc_app = get_object_or_404(JCCCApplication.objects.all(), pk=pk)
+        if not 'endorsement' in request.DATA:
+            return Response({'error': 'bad request'}, status=400)
+
+        groups = request.user.groups.all()
+        for group in groups:
+            if group.groupprofile.group_type == GroupProfile.GOV_BOARD_GROUP_TYPE:
+                jccc_app.endorsement = request.DATA.get('endorsement')
+                jccc_app.save()
+                return Response({'result': 'ok'})
+
+        return Response({'error': 'not authorized'}, status=403)
+
+    @action()
+    def submit(self, request, pk=None, *args, **kwargs):
+        jccc_app = get_object_or_404(JCCCApplication.objects.all(), pk=pk)
+        if request.user.email in jccc_app.editors and jccc_app.status == JCCCApplication.STATUS_PENDING:
+            required_fields = (
+            'title', 'requester', 'requested_amount', 'current_balance', 'funder', 'contact',
+            'contact_phone', 'contact_position', 'event_audience', 'event_description',
+            'event_advertisement', 'alternate_funding', 'alternate_plans', 'advisor_advice',
+            'endorsement')
+
+            missing_fields = []
+
+            for f in required_fields:
+                if not getattr(jccc_app, f):
+                    missing_fields.append(f)
+
+            if not missing_fields:
+                jccc_app.status = JCCCApplication.STATUS_SUBMITTED
+                jccc_app.save()
+                return Response({'result': 'ok'})
+            else:
+                return Response({'error': 'missing fields', 'fields': missing_fields}, status=400)
+        else:
+            return Response({'error': 'bad request'}, status=400)
+
+    @action()
+    def schedule(self, request, pk=None, *args, **kwargs):
+        jccc_app = get_object_or_404(JCCCApplication.objects.all(), pk=pk)
+        if request.user.on_council():
+            dt = dateutil.parser.parse(request.DATA.get('date'))
+            jccc_app.scheduled_time = dt
+            jccc_app.status = JCCCApplication.STATUS_SCHEDULED
+            jccc_app.save()
+            return Response({'result': 'ok'})
+        else:
+            return Response({'error': 'bad request'}, status=400)
+
+    @action()
+    def approve(self, request, pk=None, *args, **kwargs):
+        jccc_app = get_object_or_404(JCCCApplication.objects.all(), pk=pk)
+        amt = request.DATA.get('amt')
+        notes = request.DATA.get('notes')
+        if request.user.on_council() and amt and notes:
+            jccc_app.status = JCCCApplication.STATUS_APPROVED
+            jccc_app.approved_amount = amt
+            jccc_app.notes = notes
+            jccc_app.save()
+            return Response({'result': 'ok'})
+        else:
+            return Response({'error': 'bad request'}, status=400)
+        pass
+
+    @action()
+    def deny(self, request, pk=None, *args, **kwargs):
+        jccc_app = get_object_or_404(JCCCApplication.objects.all(), pk=pk)
+        notes = request.DATA.get('notes')
+        if request.user.on_council() and notes:
+            jccc_app.status = JCCCApplication.STATUS_DENIED
+            jccc_app.notes = notes
+            jccc_app.save()
+            return Response({'result': 'ok'})
+        else:
+            return Response({'error': 'bad request'}, status=400)
 
 
 class CIFApplicationViewSet(viewsets.ModelViewSet):

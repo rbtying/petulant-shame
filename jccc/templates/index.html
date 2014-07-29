@@ -26,18 +26,13 @@
         }
     </style>
 
-    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
-
-    <link rel="stylesheet"
-          href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-glyphicons.css">
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
 
     <link rel="stylesheet" href="{% static "css/vendor/ng-grid/ng-grid.css" %}">
 
     <!-- TODO needed? -->
     <link href="{% static "css/vendor/angularstrap/styles.css" %}" rel="stylesheet">
 
-    <link rel="stylesheet" href="{% static "css/vendor/angularstrap/bootstrap-datepicker.css" %}">
-    <link rel="stylesheet" href="{% static "css/vendor/angularstrap/bootstrap-timepicker.css" %}">
     <link rel="stylesheet"
           href="{% static "css/vendor/angularstrap/bootstrap-additions.min.css" %}">
 
@@ -61,12 +56,23 @@
 <!-- bootstrap navbar -->
 {% include "navbar-top.html" %}
 
+{% verbatim %}
+<div class="notifications">
+    <div ng-repeat="msg in messages">
+        <div class="alert alert-{{ msg.type }}"> {{ msg.text }}
+            <span class="glyphicon glyphicon-remove pull-right" ng-click="removeMessage($index);" style="cursor: pointer;"></span>
+        </div>
+    </div>
+</div>
 <!-- ng routes hook -->
-<div ng-view></div>
+<div style="margin-bottom: 200px;" ng-view></div>
+
+{% endverbatim %}
 
 <!-- footer -->
 {% include "navbar-bottom.html" %}
 
+<script type="text/javascript" src="https://www.dropbox.com/static/api/2/dropins.js" id="dropboxjs" data-app-key="ljpcp1qfj1ugpe4"></script>
 <script src="//code.jquery.com/jquery-1.10.2.min.js"></script>
 <script>window.jQuery || document.write('<script src="//code.jquery.com/jquery-1.10.2.min.js"><\/script>')</script>
 
@@ -78,9 +84,6 @@
 <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.9/angular.js"></script>
 
 <script src="{% static "js/vendor/ng-grid/ng-grid.js" %}"></script>
-
-<!-- for ui notifications -->
-<script src="{% static "js/notificationManager.js" %}"></script>
 
 <!-- enables rendering of injected html -->
 <!-- TODO localize -->
@@ -105,11 +108,9 @@
 <script src="//cdnjs.cloudflare.com/ajax/libs/prettify/r224/prettify.js"></script>
 <script src="{% static "js/vendor/angularstrap/angular-strap.min.js" %}"></script>
 <script src="{% static "js/vendor/angularstrap/angular-strap.tpl.min.js" %}"></script>
-<script src="{% static "js/vendor/angularstrap/bootstrap-datepicker.js" %}"></script>
-<script src="{% static "js/vendor/angularstrap/bootstrap-timepicker.js" %}"></script>
 
 <!--  TODO compile/optimise these during build -->
-<script src="{% static "js/app.js" %}"></script>
+<script src="{% static "js/init.js" %}"></script>
 <script src="{% static "js/services/services.js" %}"></script>
 
 <script src="{% static "js/controllers/baseCtrl.js" %}"></script>
@@ -117,19 +118,11 @@
 <script src="{% static "js/controllers/membersCtrl.js" %}"></script>
 <script src="{% static "js/controllers/groupCtrl.js" %}"></script>
 <script src="{% static "js/controllers/studentGroupCtrl.js" %}"></script>
+<script src="{% static "js/controllers/jcccCtrl.js" %}"></script>
 <script src="{% static "js/filters/filters.js" %}"></script>
 <script src="{% static "js/directives/fadeInDirective.js" %}"></script>
 <script src="{% static "js/directives/stopEventDirective.js" %}"></script>
-<script src="{% static "js/directives/notifications/notyDirective.js" %}"></script>
-
-<script type="text/javascript"
-        src="{% static "js/vendor/noty-2.1.0/js/noty/jquery.noty.js" %}"></script>
-
-<script type="text/javascript"
-        src="{% static "js/vendor/noty-2.1.0/js/noty/layouts/bottomRight.js" %}"></script>
-
-<script type="text/javascript"
-        src="{% static "js/vendor/noty-2.1.0/js/noty/themes/nucleus.js" %}"></script>
+<script src="{% static "js/app.js" %}"></script>
 
 </body>
 </html>

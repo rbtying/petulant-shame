@@ -1,64 +1,128 @@
 'use strict';
 
-// declare top-level module which depends on filters,and services
-var facu = angular.module('facu',
-    [   'facu.filters',
-        'facu.controllers',
-        'facu.directives', // custom directives
-        'ngSanitize', // for html-bind in ckeditor
-        'ngRoute',
-        'angularCharts',
-        'mgcrea.ngStrap' // angular strap
-    ]);
-
-
-var filters = angular.module('facu.filters', []);
-var directives = angular.module('facu.directives', []);
-var controllers = angular.module('facu.controllers', []);
-
 // bootstrap angular
 facu.config(['$routeProvider', '$locationProvider', '$httpProvider', function ($routeProvider, $locationProvider, $httpProvider) {
 
     // TODO use html5 *no hash) where possible
     // $locationProvider.html5Mode(true);
 
+    var current_user_func = function(API, $location, $log, $q) {
+        var defer = $q.defer();
+        API.users.me()
+            .then(function (result) {
+                API.users.update_groups(result.data.user.id);
+                defer.resolve(result.data.user);
+            }, function (err) {
+                $log.error('could not get current user', err);
+                var search = $location.search();
+                if (!(search.loginerror || search.logout)) {
+                    location.href = $('#login').attr('href');
+                }
+                defer.reject()
+            });
+        return defer.promise;
+    };
+
     $routeProvider.when('/', {
-        templateUrl: '/static/partials/home.html'
+        templateUrl: '/static/partials/home.html',
+        resolve: {
+            'current_user': current_user_func
+        }
     });
     $routeProvider.when('/admin', {
         templateUrl: '/static/partials/admin.html',
-        controller: 'adminCtrl'
+        controller: 'adminCtrl',
+        resolve: {
+            'current_user': current_user_func
+        }
     });
     $routeProvider.when('/about', {
-        templateUrl: '/static/partials/about.html'
+        templateUrl: '/static/partials/about.html',
+        resolve: {
+            'current_user': current_user_func
+        }
     });
     $routeProvider.when('/allocations', {
-        templateUrl: '/static/partials/allocations.html'
+        templateUrl: '/static/partials/allocations.html',
+        resolve: {
+            'current_user': current_user_func
+        }
+    });
+    $routeProvider.when('/jccc', {
+        templateUrl: '/static/partials/jccc/main.html',
+        controller: 'jcccCtrl',
+        resolve: {
+            'controller_action': function() {return 'main'},
+            'current_user': current_user_func
+        }
+    });
+    $routeProvider.when('/jccc/list', {
+        templateUrl: '/static/partials/jccc/list.html',
+        controller: 'jcccCtrl',
+        resolve: {
+            'controller_action': function() {return 'list'},
+            'current_user': current_user_func
+        }
+    });
+    $routeProvider.when('/jccc/new', {
+        templateUrl: '/static/partials/jccc/edit.html',
+        controller: 'jcccCtrl',
+        resolve: {
+            'controller_action': function() {return 'new'},
+            'current_user': current_user_func
+        }
+    });
+    $routeProvider.when('/jccc/:id/edit', {
+        templateUrl: '/static/partials/jccc/edit.html',
+        controller: 'jcccCtrl',
+        resolve: {
+            'controller_action': function() {return 'edit'},
+            'current_user': current_user_func
+        }
+    });
+    $routeProvider.when('/jccc/:id', {
+        templateUrl: '/static/partials/jccc/show.html',
+        controller: 'jcccCtrl',
+        resolve: {
+            'controller_action': function() {return 'show'},
+            'current_user': current_user_func
+        }
     });
     $routeProvider.when('/groups/:id', {
         controller: 'groupCtrl',
-        templateUrl: '/static/partials/group.html'
+        templateUrl: '/static/partials/group.html',
+        resolve: {
+            'current_user': current_user_func
+        }
     });
     $routeProvider.when('/groups/:id/members', {
         templateUrl: '/static/partials/members.html',
         controller: 'membersCtrl',
         resolve: {
-            'group_unit': function() {return 'groups'}
+            'group_unit': function() {return 'groups'},
+            'current_user': current_user_func
         }
     });
     $routeProvider.when('/student_groups', {
         controller: 'studentGroupListCtrl',
-        templateUrl: '/static/partials/student_group_list.html'
+        templateUrl: '/static/partials/student_group_list.html',
+        resolve: {
+            'current_user': current_user_func
+        }
     });
     $routeProvider.when('/student_groups/:id', {
         controller: 'studentGroupCtrl',
-        templateUrl: '/static/partials/student_group.html'
+        templateUrl: '/static/partials/student_group.html',
+        resolve: {
+            'current_user': current_user_func
+        }
     });
     $routeProvider.when('/student_groups/:id/members', {
         templateUrl: '/static/partials/members.html',
         controller: 'membersCtrl',
         resolve: {
-            'group_unit': function() {return 'student_groups'}
+            'group_unit': function() {return 'student_groups'},
+            'current_user': current_user_func
         }
     });
 
@@ -89,15 +153,34 @@ facu.run(function ($rootScope, $log, $q, $location, $http, $timeout, API) {
         }
     ];
 
-    $rootScope.notificationManager = new NotificationManager($rootScope);
+    $rootScope.messages = [];
+
+    $rootScope.notify = function (type, text) {
+        var datum = {
+            type: type,
+            text: text
+        };
+        $rootScope.messages.push(datum);
+
+        $timeout(function () {
+            var idx = $rootScope.messages.indexOf(datum);
+            if (idx > -1) {
+                $rootScope.removeMessage(idx);
+            }
+        }, 3000);
+    };
+
+    $rootScope.removeMessage = function(idx) {
+        $rootScope.messages.splice(idx, 1);
+    };
 
     var search = $location.search();
     if (search.loginerror) {
-        $rootScope.notificationManager.notify('error', 'An error occured during login. Please make sure you are using your @columbia.edu account');
+        $rootScope.notify('error', 'An error occured during login. Please make sure you are using your @columbia.edu account');
         delete search.loginerror;
     }
     if (search.logout) {
-        $rootScope.notificationManager.notify('info', 'You have successfully been logged out');
+        $rootScope.notify('info', 'You have successfully been logged out');
         delete search.logout;
     }
     $location.search(search);

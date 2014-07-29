@@ -95,12 +95,24 @@ class StudentGroup(models.Model):
 
     editors = JSONField(default=[])
 
+    def __str__(self):
+        return self.name
+
+    def allocation(self):
+        try:
+            return self.allocation_set.first()
+        except Allocation.DoesNotExist:
+            return None
 
 class Allocation(models.Model):
     value = models.FloatField()
     source = models.ForeignKey(Group)
     recipient = models.ForeignKey(StudentGroup)
     year = models.IntegerField()
+
+    class Meta:
+        unique_together = ('recipient', 'year')
+        ordering = ['-year']
 
     def __str__(self):
         return '%d:[$%.02f] %s -> %s' % (
@@ -156,10 +168,10 @@ def check_stuff(sender, instance, **kwargs):
         return False
 
     if instance.status == FundingRequest.STATUS_SUBMITTED:
-        instance.submitted_time = datetime.now()
+        instance.submitted_time = datetime.utcnow()
 
-    if not instance.contact.username in instance.editors:
-        instance.editors.append(instance.contact.username)
+    if not instance.contact.email in instance.editors:
+        instance.editors.append(instance.contact.email)
 
 
 class JCCCApplication(FundingRequest):
@@ -167,7 +179,7 @@ class JCCCApplication(FundingRequest):
 
     event_name = models.CharField(max_length=128)
 
-    event_time = models.DateTimeField()
+    event_time = models.DateTimeField(null=True)
     event_location = models.CharField(max_length=128, blank=True)
     event_attendance = models.IntegerField(blank=True)
     event_recurring = models.BooleanField(default=False)
