@@ -8,6 +8,7 @@ var facu = angular.module('facu',
         'ngSanitize', // for html-bind in ckeditor
         'ngRoute',
         'angularCharts',
+        'angularFileUpload',
         'mgcrea.ngStrap' // angular strap
     ]);
 

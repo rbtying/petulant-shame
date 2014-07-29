@@ -90,23 +90,33 @@ controllers
 
         var mutex = false;
 
-        $scope.uploadFile = function () {
-            Dropbox.choose({
-                success: function (files) {
-                    $timeout(function () {
-                        var promises = [];
-                        for (var i in files) {
-                            promises.push(API.jccc_app.upload_file($scope.db.current_application.id, files[i].name, files[i].link));
-                        }
-
-                        $q.all(promises).then(function (results) {
-                            $location.path('/jccc/' + $scope.db.current_application.id);
-                            get_specific();
-                        });
+        $scope.uploadFile = function (files) {
+            $log.log('uploadFile', files);
+            var promises = [];
+            for (var i = 0; i < files.length; i++) {
+                var file = files[i];
+                promises.push(API.jccc_app.upload_file($scope.db.current_application.id, file));
+                $q.all(promises).then(function (result) {
+                        $location.path('/jccc/' + $scope.db.current_application.id);
+                        get_specific();
                     });
-                },
-                multiselect: true
-            });
+            }
+//            Dropbox.choose({
+//                success: function (files) {
+//                    $timeout(function () {
+//                        var promises = [];
+//                        for (var i in files) {
+//                            promises.push(API.jccc_app.upload_file($scope.db.current_application.id, files[i].name, files[i].link));
+//                        }
+//
+//                        $q.all(promises).then(function (results) {
+//                            $location.path('/jccc/' + $scope.db.current_application.id);
+//                            get_specific();
+//                        });
+//                    });
+//                },
+//                multiselect: true
+//            });
         };
 
         $scope.deleteFile = function (fid) {

@@ -4,6 +4,8 @@ controllers
     .controller('baseCtrl', function ($rootScope, $scope, $q, $log, $location, API) {
         $log.log('init baseCtrl');
 
+        $scope.MEDIA_URL = DJANGO_MEDIA_URL;
+
         $scope.db = {};
         API.groups.list()
             .then(function (result) {

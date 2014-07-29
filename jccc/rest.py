@@ -294,10 +294,16 @@ class JCCCApplicationViewSet(viewsets.ModelViewSet):
         jccc_app = get_object_or_404(JCCCApplication.objects.all(), pk=pk)
         uploaded_files = []
         if request.user.email in jccc_app.editors:
-            for (k, v) in request.DATA.iteritems():
-                af = AttachedFile(request=jccc_app, name=k, attachment=v)
+            print request.DATA, request.FILES
+            files = request.FILES.getlist('file')
+            for f in files:
+                af = AttachedFile(request=jccc_app, name=f.name)
+                af.attachment.save(f.name, f, save=True)
                 af.save()
                 uploaded_files.append(af.id)
+
+            print uploaded_files
+
             return Response({'result': uploaded_files})
         else:
             return Response({'error': 'not authorized'}, status=403)

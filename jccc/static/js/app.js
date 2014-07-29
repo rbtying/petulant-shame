@@ -16,7 +16,10 @@ facu.config(['$routeProvider', '$locationProvider', '$httpProvider', function ($
                 $log.error('could not get current user', err);
                 var search = $location.search();
                 if (!(search.loginerror || search.logout)) {
-                    location.href = $('#login').attr('href');
+                    var href = $('#login').attr('href');
+                    if (href) {
+                        location.href = href;
+                    }
                 }
                 defer.reject()
             });

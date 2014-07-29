@@ -22,7 +22,7 @@ facu.run(function($http) {
 
 });
 facu.factory('API',
-    function ($q, $log, $http) {
+    function ($q, $log, $http, $upload) {
         var baseurl = '/api/';
         var alloc = 'allocations/';
         var cif_app = 'cif_applications/';
@@ -213,15 +213,21 @@ facu.factory('API',
             });
         };
 
-        api_calls.jccc_app.upload_file = function(id, filename, file) {
-            $log.debug('uploading file to app', id);
-            var data = {};
-            data[filename] = file;
-            return $http({
+        api_calls.jccc_app.upload_file = function(id, files) {
+            $log.debug('uploading file to jccc app', id, files);
+
+            return $upload.upload({
                 url: baseurl + jccc_app + id + '/upload_file/',
-                method: 'POST',
-                data: data
+                file: files
             });
+
+//            var data = {};
+//            data[filename] = file;
+//            return $http({
+//                url: baseurl + jccc_app + id + '/upload_file/',
+//                method: 'POST',
+//                data: data
+//            });
         };
 
         api_calls.jccc_app.delete_file = function(id, fileid) {

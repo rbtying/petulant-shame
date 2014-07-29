@@ -114,7 +114,7 @@
                 <td>
                     <ul class="list-unstyled">
                         <li ng-repeat="a in db.current_application.attachments">
-                            <a href="{{ a.attachment }}" title="{{ a.name }}" target="_blank">{{ a.name }}</a>
+                            <a href="{{ MEDIA_URL }}{{ a.attachment }}" title="{{ a.name }}" target="_blank">{{ a.name }}</a>
                             <span class="glyphicon glyphicon-remove pull-right"
                                   style="cursor: pointer;" ng-show="can_edit()"
                                   ng-click="deleteFile(a.id)"></span>
@@ -127,7 +127,7 @@
     <div class="row" ng-if="current_user.on_council || db.current_application.editors.indexOf(current_user.email) > -1">
         <div class="col-md-12">
             <div ng-if="db.current_application.status == 'PEND'">
-                <a ng-click="uploadFile()" class="btn btn-default" ng-hide="show_add_file">Add attachment</a>
+                <div class="btn btn-default" ng-file-select="uploadFile($files)" data-multiple>Add attachment</div>
                 <a href="#/jccc/{{ db.current_application.id }}/edit" class="btn btn-default">Edit</a>
                 <a ng-click="submitApplication()" class="btn btn-default">Submit</a>
                 <a ng-click="endorseApplication()" class="btn btn-default" ng-show="can_endorse()">Endorse</a>

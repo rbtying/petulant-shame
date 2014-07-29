@@ -9,6 +9,7 @@
 <html class="no-js"> <!--<![endif]-->
 
 {% load staticfiles %}
+{% load static %}
 
 <head>
 
@@ -72,7 +73,6 @@
 <!-- footer -->
 {% include "navbar-bottom.html" %}
 
-<script type="text/javascript" src="https://www.dropbox.com/static/api/2/dropins.js" id="dropboxjs" data-app-key="ljpcp1qfj1ugpe4"></script>
 <script src="//code.jquery.com/jquery-1.10.2.min.js"></script>
 <script>window.jQuery || document.write('<script src="//code.jquery.com/jquery-1.10.2.min.js"><\/script>')</script>
 
@@ -80,8 +80,15 @@
 
 <!-- TODO localize -->
 <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/jquery-ui.min.js"></script>
-
+<script>
+    FileAPI = {
+        jsPath: '{% static "js/vendor/angular-file-upload/" %}',
+        staticPath: '{% static "js/vendor/angular-file-upload/" %}'
+    };
+</script>
+<script src="{% static "js/vendor/angular-file-upload/angular-file-upload-shim.min.js" %}"></script>
 <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.9/angular.js"></script>
+<script src="{% static "js/vendor/angular-file-upload/angular-file-upload.min.js" %}"></script>
 
 <script src="{% static "js/vendor/ng-grid/ng-grid.js" %}"></script>
 
@@ -110,6 +117,10 @@
 <script src="{% static "js/vendor/angularstrap/angular-strap.tpl.min.js" %}"></script>
 
 <!--  TODO compile/optimise these during build -->
+<script>
+    var DJANGO_MEDIA_URL = '{% get_media_prefix %}';
+    var DJANGO_STATIC_URL = '{% get_static_prefix %}';
+</script>
 <script src="{% static "js/init.js" %}"></script>
 <script src="{% static "js/services/services.js" %}"></script>
 

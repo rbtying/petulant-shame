@@ -238,7 +238,7 @@ class AttachedFile(models.Model):
     request = models.ForeignKey(FundingRequest)
     name = models.CharField(max_length=384)
 
-    attachment = models.FileField(upload_to='/%Y/%m/')
+    attachment = models.FileField(upload_to='%Y/%m/')
     created_time = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
