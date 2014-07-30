@@ -141,28 +141,15 @@ class JCCCApplicationSerializer(serializers.ModelSerializer):
         request = self.context.get('request', None)
         view = self.context.get('view', None)
         if request and view and getattr(view, 'object', None):
-            if not request.user.on_council():
-                fields['status'].read_only = True
-                fields['notes'].read_only = True
-                fields['approved_amount'].read_only = True
-                fields['endorsement'].read_only = True
+			fields['status'].read_only = True
+			fields['notes'].read_only = True
+			fields['approved_amount'].read_only = True
+			fields['endorsement'].read_only = True
 
         return fields
 
     def validate_editors(self, attrs, source):
         return check_json_list(attrs, source)
-
-    def validate(self, attrs):
-        if attrs['status'] != FundingRequest.STATUS_PENDING:
-            tocheck = (
-            'requester', 'description', 'event_time', 'event_location', 'event_attendance',
-            'event_recurring', 'event_description', 'event_advertisement', 'event_audience',
-            'current_balance', 'alternate_funding', 'alternate_plans', 'advisor_advice',
-            'endorsement', 'attachments')
-            for c in tocheck:
-                if not attrs[c]:
-                    raise serializers.ValidationError('Must have a %s' % c)
-        return validate_attrs(attrs)
 
     class Meta:
         model = JCCCApplication

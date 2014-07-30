@@ -139,6 +139,8 @@ controllers
             mutex = true;
 
             var copy = $.extend(true, {}, $scope.db.current_application);
+			delete copy.status;
+
             API.jccc_app.set($scope.db.current_application.id, copy)
                 .then(function (result) {
                     $scope.notify('info', 'Updated JCCC application #' + result.id);
@@ -158,6 +160,8 @@ controllers
                     return;
                 }
                 mutex = true;
+				var copy = $.extend(true, {}, $scope.db.current_application);
+				delete copy.status;
                 return API.jccc_app.create($scope.db.current_application)
                     .then(function (result) {
                         mutex = false;
