@@ -21,7 +21,7 @@
                         <a ng-href="#/groups/{{ sg.governing_board }}">{{ db.groups_by_id[sg.governing_board].name }}</a>
                     </td>
                     <td>
-                        <a ng-href="#/allocations/?recipient_id={{ sg.id }}">{{ sg.allocation.value | currency }} ({{ sg.allocation.year }})</a>
+                        <a ng-href="#/allocations/?recipient__id={{ sg.id }}">{{ sg.allocation.value | currency }} ({{ sg.allocation.year }})</a>
                     </td>
                 </tr>
             </table>

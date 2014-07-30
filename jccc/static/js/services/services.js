@@ -129,6 +129,17 @@ facu.factory('API',
             attachments: create_api_call(attachments)
         };
 
+        api_calls.alloc.bulk_upload = function (entries) {
+            $log.debug('sending bulk upload...');
+            return $http({
+                url: baseurl + alloc + '0/bulk_upload/',
+                method: 'POST',
+                data: {
+                    entries: entries
+                }
+            });
+        };
+
         api_calls.groups.set_editors = function (id, editors) {
             $log.debug('setting editors for group ' + id);
             return $http({

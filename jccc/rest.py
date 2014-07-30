@@ -197,6 +197,7 @@ class AllocationViewSet(viewsets.ModelViewSet):
     serializer_class = AllocationSerializer
 
     permission_classes = (permissions.StudentGovernmentAndReadOnly,)
+    ordering = ('year', 'source__id', 'value', 'recipient__id')
 
     class AllocationFilter(django_filters.FilterSet):
         min_value = django_filters.NumberFilter(name='value', lookup_type='gte')
@@ -207,7 +208,74 @@ class AllocationViewSet(viewsets.ModelViewSet):
         class Meta:
             model = Allocation
             fields = ('value', 'source__id', 'recipient__id', 'min_value', 'max_value', 'min_year',
-                      'max_year')
+                      'max_year', 'year')
+
+    @action()
+    def bulk_upload(selfself, request, pk=None):
+        entries = request.DATA.get('entries')
+
+        auth = False
+        for g in request.user.groups.all():
+            if g.groupprofile.group_type in (
+                GroupProfile.COUNCIL_GROUP_TYPE, GroupProfile.GOV_BOARD_GROUP_TYPE):
+                auth = True
+                break
+
+        if not auth:
+            return Response({'error', 'unauthorized'}, status=403)
+
+        for entry in entries:
+            group_name = entry.get('group_name')
+            alloc_value = entry.get('alloc_value')
+            alloc_year = entry.get('alloc_year')
+            sga_acct_number = entry.get('sga_acct_number')
+            cu_acct_number = entry.get('cu_acct_number')
+            cu_dept_number = entry.get('cu_dept_number')
+            cu_project_number = entry.get('cu_project_number')
+            contact = entry.get('contact')
+            governing_board = entry.get('governing_board')
+            mission = entry.get('mission')
+            percent_cc = entry.get('percent_cc')
+            percent_bc = entry.get('percent_bc')
+            percent_seas = entry.get('percent_seas')
+            percent_gs = entry.get('percent_gs')
+            percent_grad = entry.get('percent_grad')
+
+            try:
+                g = StudentGroup.objects.get(name=group_name)
+            except StudentGroup.DoesNotExist:
+                g = StudentGroup(name=group_name)
+
+            try:
+                gb = Group.objects.get(name=governing_board)
+            except Group.DoesNotExist:
+                return Response({'error': 'invalid'}, status=400)
+
+            g.governing_board = gb
+            g.sga_acct_number = sga_acct_number
+            g.cu_acct_number = cu_acct_number
+            g.cu_dept_number = cu_dept_number
+            g.cu_proj_number = cu_project_number
+            if not contact in g.editors:
+                g.editors.append(contact)
+            g.mission = mission
+            g.percent_cc = percent_cc
+            g.percent_bc = percent_bc
+            g.percent_seas = percent_seas
+            g.percent_gs = percent_gs
+            g.percent_grad = percent_grad
+
+            g.save()
+
+            try:
+                a = Allocation.objects.get(recipient=g, year=alloc_year)
+            except Allocation.DoesNotExist:
+                a = Allocation(recipient=g, year=alloc_year)
+            a.source = gb
+            a.value = alloc_value
+            a.save()
+
+        return Response({'result': 'ok'})
 
     filter_class = AllocationFilter
 

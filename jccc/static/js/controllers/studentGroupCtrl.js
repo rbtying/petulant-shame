@@ -23,7 +23,7 @@ controllers
                 $scope.db.current_group = data;
 
                 API.alloc.list({
-                    recipient: $scope.db.current_group.id
+                    recipient__id: $scope.db.current_group.id
                 }).then(function (alloc) {
                     $scope.db.current_group.allocations = alloc.results;
                 });
@@ -61,7 +61,7 @@ controllers
         switch(controller_action) {
             case 'new':
                 $scope.db.current_group = {
-                    editors: [$scope.current_user.email],
+                    editors: []
                 };
 
 
@@ -126,6 +126,10 @@ controllers
                 }
             }
 
+            if ($scope.db.current_group.editors.length == 0) {
+                $scope.db.current_group.editors = [$scope.current_user.email];
+            }
+
             if ($scope.db.current_group.id) {
                 API.student_groups.set($scope.db.current_group.id, $scope.db.current_group)
                     .then(function (result) {
@@ -153,9 +157,29 @@ controllers
         };
     });
 controllers
-    .controller('studentGroupListCtrl', function ($scope, $q, $log, $location, API) {
+    .controller('studentGroupListCtrl', function ($scope, $q, $log, $location, API, current_user) {
         $log.log('init studentGroupCtrl');
+        $scope.current_user = current_user;
+
         API.student_groups.list($location.search()).then(function(data) {
             $scope.db.current_groups = data.results;
         });
+
+        $scope.can_add_group = function () {
+            if ($scope.current_user.on_council) {
+                return true;
+            }
+
+            if (!$scope.db.groups_by_id) {
+                return false;
+            }
+
+            for (var i in $scope.current_user.groups) {
+                var g = $scope.current_user.groups[i];
+                if ($scope.db.groups_by_id[g].groupprofile.group_type == 'GBRD') {
+                    return true;
+                }
+            }
+            return false;
+        };
     });

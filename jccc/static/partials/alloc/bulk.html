@@ -1,0 +1,105 @@
+<div class="container" ng-show="can_edit()" fade-in>
+    <h1 class="text-center">Bulk set allocations</h1>
+    <hr>
+
+
+    <p><strong>Warning: </strong> this endpoint may overwrite previous allocations and/or may create
+        new groups. Please be careful! Deduplication is painful and un-fun.</p>
+
+    <p>This will probably not be able to catch all possible errors -- be aware!</p>
+
+    <p>Please enter a CSV with the fields listed below. <strong>DO NOT RENAME THE FIELDS!</strong> A header row is required.</p>
+    <div class="form-group">
+        <textarea class="form-control" ng-model="csv" rows="10" required>
+            group_name, alloc_value, alloc_year, sga_acct_number, cu_acct_number, cu_dept_number, cu_project_number, contact, governing_board, mission, percent_cc, percent_bc, percent_seas, percent_gs, percent_grad
+        </textarea>
+        <button class="btn btn-default" ng-click="addCSV()">Add entries</button>
+        <button class="btn btn-default" ng-click="checkEntries()">Check entries</button>
+        <button class="btn btn-default" ng-click="submitEntries()" ng-disabled="!entries_valid">Submit entries</button>
+    </div>
+    <table class="table table-bordered">
+        <tr>
+            <th>Group name</th>
+            <th>Group allocation amount</th>
+            <th>Group allocation year (fall year)</th>
+            <th>SGA account number</th>
+            <th>CU account number</th>
+            <th>CU dept number</th>
+            <th>CU project number</th>
+            <th>Group contact (UNI email [not an alias])</th>
+            <th>Governing board</th>
+            <th>Group mission</th>
+            <th>% CC</th>
+            <th>% BC</th>
+            <th>% SEAS</th>
+            <th>% GS</th>
+            <th>% Grad</th>
+            <th></th>
+        </tr>
+        <tr ng-repeat="entry in db.entries">
+            <td ng-class="{
+                'success': db.info[$index].group_exists,
+                'danger': !db.info[$index].group_not_empty,
+                'warning': !db.info[$index].group_exists && db.info[$index].group_not_empty
+            }">{{ entry.group_name }}</td>
+
+            <td>{{ entry.alloc_value | currency }}</td>
+            <td>{{ entry.alloc_year }}</td>
+
+            <td ng-class="{
+                'success': db.info[$index].acct_number_exists,
+                'warning': !db.info[$index].acct_number_exists
+            }">{{ entry.sga_acct_number }}</td>
+            <td ng-class="{
+                'success': db.info[$index].acct_number_exists,
+                'warning': !db.info[$index].acct_number_exists
+            }">{{ entry.cu_acct_number }}</td>
+            <td ng-class="{
+                'success': db.info[$index].acct_number_exists,
+                'warning': !db.info[$index].acct_number_exists
+            }">{{ entry.cu_dept_number }}</td>
+            <td ng-class="{
+                'success': db.info[$index].acct_number_exists,
+                'warning': !db.info[$index].acct_number_exists
+            }">{{ entry.cu_project_number }}</td>
+
+            <td ng-class="{
+                'success': db.info[$index].contact_exists,
+                'danger': !db.info[$index].contact_exists
+            }">{{ entry.contact }}</td>
+
+            <td ng-class="{
+                'success': db.info[$index].governing_board_exists,
+                'danger': !db.info[$index].governing_board_exists
+            }">{{ entry.governing_board }}</td>
+
+            <td ng-class="{
+                'success': db.info[$index].mission_exists,
+                'warning': !db.info[$index].mission_exists
+            }">{{ entry.mission }}</td>
+
+            <td ng-class="{
+                'success': db.info[$index].sum_valid,
+                'danger': !db.info[$index].sum_valid
+            }">{{ entry.percent_cc }}</td>
+            <td ng-class="{
+                'success': db.info[$index].sum_valid,
+                'danger': !db.info[$index].sum_valid
+            }">{{ entry.percent_bc }}</td>
+            <td ng-class="{
+                'success': db.info[$index].sum_valid,
+                'danger': !db.info[$index].sum_valid
+            }">{{ entry.percent_seas }}</td>
+            <td ng-class="{
+                'success': db.info[$index].sum_valid,
+                'danger': !db.info[$index].sum_valid
+            }">{{ entry.percent_gs }}</td>
+            <td ng-class="{
+                'success': db.info[$index].sum_valid,
+                'danger': !db.info[$index].sum_valid
+            }">{{ entry.percent_grad }}</td>
+
+            <td><a ng-click="removeEntry($index);">remove</a></td>
+        </tr>
+    </table>
+</div>

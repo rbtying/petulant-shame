@@ -1,0 +1,56 @@
+<div class="container" fade-in>
+
+    <div class="row">
+        <div class="col-md-12">
+            <h1 ng-if="db.current_allocation.id">
+                Editing {{ db.current_allocation.name }}
+            </h1>
+
+            <h1 ng-if="!db.current_allocation.id">
+                New Allocation
+            </h1>
+        </div>
+    </div>
+    <div class="row">
+        <form role="form" name="allocation_form" ng-submit="saveAllocation()" novalidate>
+            <div class="form-group">
+                <div class="col-md-12">
+                    <label for="value">Allocation</label>
+                    <input name="value" value="value" type="number" class="form-control" id="allocation-value"
+                           ng-model="db.current_allocation.value" ng-disabled="!can_edit()" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-12">
+                    <label for="year">Year (put the fall semester)</label>
+                    <input name="year" year="year" type="number" class="form-control" id="allocation-year"
+                           ng-model="db.current_allocation.year" ng-disabled="!can_edit()" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-12">
+                    <label for="recipient">Recipient</label>
+                    <select name="recipient" class="form-control" id="allocation-recipient"
+                            ng-model="db.current_allocation.recipient" ng-disabled="!can_edit()"
+                            ng-options="g.id as g.name for g in db.student_groups" required></select>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-12">
+                    <label for="source">Source</label>
+                    <select name="source" class="form-control" id="allocation-source"
+                            ng-model="db.current_allocation.source" ng-disabled="!can_edit()"
+                            ng-options="g.id as g.name for g in db.governing_boards" required></select>
+                </div>
+            </div>
+        </form>
+        <div class="col-md-12">
+            <div class="btn-allocation">
+                <a class="btn" ng-class="{
+                        'btn-success': allocation_form.$valid,
+                        'btn-danger': allocation_form.$invalid
+                    }" ng-click="$event.preventDefault(); saveAllocation()" ng-disable="!can_edit() && allocation_form.$invalid">Save</a>
+            </div>
+        </div>
+    </div>
+</div>

@@ -25,12 +25,6 @@ facu.config(['$routeProvider', '$locationProvider', '$httpProvider', function ($
         return defer.promise;
     };
 
-    $routeProvider.when('/', {
-        templateUrl: '/static/partials/home.html',
-        resolve: {
-            'current_user': current_user_func
-        }
-    });
     $routeProvider.when('/admin', {
         templateUrl: '/static/partials/admin.html',
         controller: 'adminCtrl',
@@ -44,10 +38,36 @@ facu.config(['$routeProvider', '$locationProvider', '$httpProvider', function ($
             'current_user': current_user_func
         }
     });
-    $routeProvider.when('/allocations', {
-        templateUrl: '/static/partials/allocations.html',
+    $routeProvider.when('/allocations/new', {
+        templateUrl: '/static/partials/alloc/edit.html',
+        controller: 'allocationCtrl',
         resolve: {
-            'current_user': current_user_func
+            'current_user': current_user_func,
+            'controller_action': function() {return 'new'}
+        }
+    });
+    $routeProvider.when('/allocations/bulk', {
+        templateUrl: '/static/partials/alloc/bulk.html',
+        controller: 'bulkCtrl',
+        resolve: {
+            'current_user': current_user_func,
+            'controller_action': function() {return 'bulk'}
+        }
+    });
+    $routeProvider.when('/allocations/:id/edit', {
+        templateUrl: '/static/partials/alloc/edit.html',
+        controller: 'allocationCtrl',
+        resolve: {
+            'current_user': current_user_func,
+            'controller_action': function() {return 'edit'}
+        }
+    });
+    $routeProvider.when('/allocations', {
+        templateUrl: '/static/partials/alloc/allocations.html',
+        controller: 'allocationCtrl',
+        resolve: {
+            'current_user': current_user_func,
+            'controller_action': function() {return 'list'}
         }
     });
     $routeProvider.when('/jccc', {

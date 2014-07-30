@@ -17,9 +17,11 @@ controllers
                     return m.groupprofile.group_type == 'CNCL';
                 });
                 $scope.db.groups_by_id = {};
+                $scope.db.groups_by_name = {};
                 for (var i in $scope.db.groups) {
                     var g = $scope.db.groups[i];
                     $scope.db.groups_by_id[g.id] = g;
+                    $scope.db.groups_by_name[g.name] = g;
                 }
             });
         API.student_groups.list()
@@ -27,9 +29,11 @@ controllers
                 $scope.db.student_groups = result.results;
 
                 $scope.db.student_groups_by_id = {};
+                $scope.db.student_groups_by_name = {};
                 for (var i in $scope.db.student_groups) {
                     var g = $scope.db.student_groups[i];
                     $scope.db.student_groups_by_id[g.id] = g;
+                    $scope.db.student_groups_by_name[g.name] = g;
                 }
             });
 

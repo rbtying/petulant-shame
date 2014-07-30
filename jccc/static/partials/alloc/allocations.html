@@ -1,0 +1,36 @@
+<div class="container" fade-in>
+    <h1 class="text-center">Allocations</h1>
+    <hr>
+
+    <a href="#/allocations/new" ng-show="can_edit()" class="btn btn-default">Create new allocation</a>
+    <a href="#/allocations/bulk" ng-show="can_edit()" class="btn btn-default">Bulk set allocations</a>
+
+    <form class="form-inline">
+        <div class="form-group">
+            <label for="year">Filter by year</label>
+            <select name="year" class="form-control" ng-model="allocation_filter_year" ng-options="y for y in allocation_years" bs-select></select>
+        </div>
+        <div class="form-group">
+            <label for="governing_board">Filter by governing board</label>
+            <select name="governing_board" class="form-control" ng-model="allocation_filter_gb" ng-options="y.id as y.name for y in allocation_sources" bs-select></select>
+        </div>
+
+    </form>
+
+    <table class="table table-bordered">
+        <tr>
+            <th ng-show="can_edit()">ID</th>
+            <th>Recipient</th>
+            <th>Source</th>
+            <th>Amount</th>
+            <th>Year</th>
+        </tr>
+        <tr ng-repeat="alloc in db.allocations | filter:allocations_filter">
+            <td ng-show="can_edit()"><a href="#/allocations/{{ alloc.id }}/edit">{{ alloc.id }}</a></td>
+            <td>{{ db.student_groups_by_id[alloc.recipient].name }}</td>
+            <td>{{ db.groups_by_id[alloc.source].name }}</td>
+            <td>{{ alloc.value | currency }}</td>
+            <td>{{ alloc.year }}</td>
+        </tr>
+    </table>
+</div>
