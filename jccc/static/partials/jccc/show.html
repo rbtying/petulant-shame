@@ -122,6 +122,11 @@
                     </ul>
                 </td>
             </tr>
+            <tr>
+                <th>Notes</th>
+                <td ng-bind="db.current_application.notes" ng-show="db.current_application.notes">
+                </td>
+            </tr>
         </table>
     </div>
     <div class="row" ng-if="current_user.on_council || db.current_application.editors.indexOf(current_user.email) > -1">

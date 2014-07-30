@@ -196,6 +196,8 @@ class JCCCApplication(FundingRequest):
 
     endorsement = models.TextField(blank=True)
 
+    other = models.TextField(blank=True)
+
 
 class CIFApplication(FundingRequest):
     description = models.TextField(blank=True)

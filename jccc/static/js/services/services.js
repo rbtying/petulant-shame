@@ -226,14 +226,6 @@ facu.factory('API',
                 url: baseurl + jccc_app + id + '/upload_file/',
                 file: files
             });
-
-//            var data = {};
-//            data[filename] = file;
-//            return $http({
-//                url: baseurl + jccc_app + id + '/upload_file/',
-//                method: 'POST',
-//                data: data
-//            });
         };
 
         api_calls.jccc_app.delete_file = function(id, fileid) {
