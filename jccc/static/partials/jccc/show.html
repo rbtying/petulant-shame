@@ -37,15 +37,15 @@
             </tr>
             <tr>
                 <th>Updated time</th>
-                <td>{{ db.updated_time | date:'medium' }}</td>
+                <td>{{ db.current_application.updated_time | date:'medium' }}</td>
             </tr>
             <tr>
                 <th>Created time</th>
-                <td>{{ db.created_time | date:'medium' }}</td>
+                <td>{{ db.current_application.created_time | date:'medium' }}</td>
             </tr>
             <tr>
                 <th>Scheduled time</th>
-                <td>{{ db.scheduled_time | date:'medium' }}</td>
+                <td>{{ db.current_application.scheduled_time | date:'medium' }}</td>
             </tr>
             <tr ng-show="db.current_application.status == 'APRV'">
                 <th>Approved amount</th>
@@ -122,10 +122,9 @@
                     </ul>
                 </td>
             </tr>
-            <tr>
+            <tr ng-show="db.current_application.notes">
                 <th>Notes</th>
-                <td ng-bind="db.current_application.notes" ng-show="db.current_application.notes">
-                </td>
+                <td ng-bind="db.current_application.notes"></td>
             </tr>
         </table>
     </div>
