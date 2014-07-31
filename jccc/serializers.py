@@ -11,10 +11,11 @@ def check_json_list(attrs, source):
 
 class UserSerializer(serializers.ModelSerializer):
     on_council = serializers.Field(source='on_council')
+    on_governing_board = serializers.Field(source='on_governing_board')
 
     class Meta:
         model = User
-        fields = ('id', 'username', 'email', 'groups', 'on_council')
+        fields = ('id', 'username', 'email', 'groups', 'on_council', 'on_governing_board')
 
 
 class GroupProfileSerializer(serializers.ModelSerializer):

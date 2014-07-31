@@ -73,6 +73,14 @@
     },
     {
         "fields": {
+            "name": "GBB",
+            "permissions": []
+        },
+        "model": "auth.group",
+        "pk": 11
+    },
+    {
+        "fields": {
             "group_type": "CNCL",
             "full_name": "Engineering Student Council",
             "editors": []
@@ -151,5 +159,14 @@
         },
         "model": "jccc.groupprofile",
         "pk": 10
+    }
+    {
+        "fields": {
+            "group_type": "GBRD",
+            "full_name": "Governing Board at Barnard",
+            "editors": []
+        },
+        "model": "jccc.groupprofile",
+        "pk": 11
     }
 ]

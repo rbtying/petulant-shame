@@ -71,8 +71,19 @@ def on_council(self):
             return True
     return False
 
+def on_governing_board(self):
+    """
+    Checks if the user is on a governing board or not
+    """
+    groups = self.groups(manager='objects').all()
+    for group in groups:
+        if group.group_type() == GroupProfile.GOV_BOARD_GROUP_TYPE:
+            return True
+    return False
+
 
 setattr(User, 'on_council', on_council)
+setattr(User, 'on_governing_board', on_governing_board)
 
 
 class StudentGroup(models.Model):
