@@ -39,11 +39,11 @@
                 <th>Projected budget</th>
                 <td>
                     <span style="color:red" ng-show="db.current_application.projected_expenditures">
-                        -{{ db.current_application.projected_expenditures | currency }}
+                        Expenditures: {{ db.current_application.projected_expenditures | currency }}
                     </span>
                     &nbsp;
                     <span style="color:green" ng-show="db.current_application.projected_revenues">
-                        +{{ db.current_application.projected_revenues | currency }}
+                        Revenues: {{ db.current_application.projected_revenues | currency }}
                     </span>
                 </td>
             </tr>
@@ -51,11 +51,11 @@
                 <th>Actual budget</th>
                 <td>
                     <span style="color:red" ng-show="db.current_application.actual_expenditures">
-                        -{{ db.current_application.actual_expenditures | currency }}
+                        Expenditures: {{ db.current_application.actual_expenditures | currency }}
                     </span>
                     &nbsp;
                     <span style="color:green" ng-show="db.current_application.actual_revenues">
-                        +{{ db.current_application.actual_revenues | currency }}
+                        Revenues: {{ db.current_application.actual_revenues | currency }}
                     </span>
                 </td>
             </tr>

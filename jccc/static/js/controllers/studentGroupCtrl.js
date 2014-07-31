@@ -91,17 +91,7 @@ controllers
             }
             var idx = $scope.db.current_group.editors.indexOf($scope.current_user.email);
 
-            if ((idx > -1) || $scope.current_user.on_council) {
-                return true;
-            }
-
-            for (var i in $scope.current_user.groups) {
-                var g = $scope.current_user.groups[i];
-                if (g == $scope.db.current_group.governing_board) {
-                    return true;
-                }
-            }
-            return false;
+            return idx > -1 || $scope.current_user.on_council || $scope.current_user.on_governing_board;
         };
 
         var mutex = false;
@@ -167,20 +157,6 @@ controllers
         });
 
         $scope.can_add_group = function () {
-            if ($scope.current_user.on_council) {
-                return true;
-            }
-
-            if (!$scope.db.groups_by_id) {
-                return false;
-            }
-
-            for (var i in $scope.current_user.groups) {
-                var g = $scope.current_user.groups[i];
-                if ($scope.db.groups_by_id[g].groupprofile.group_type == 'GBRD') {
-                    return true;
-                }
-            }
-            return false;
+            return $scope.current_user.on_council || $scope.current_user.on_governing_board;
         };
     });

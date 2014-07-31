@@ -15,20 +15,7 @@ controllers
         $scope.csv = $scope.header_csv;
 
         $scope.can_edit = function () {
-            if ($scope.current_user.on_council) {
-                return true;
-            }
-            if (!$scope.db.groups_by_id) {
-                return false;
-            }
-
-            for (var i in $scope.current_user.groups) {
-                var g = $scope.db.groups_by_id[$scope.current_user.groups[i]];
-                if (g.groupprofile.group_type == 'GBRD') {
-                    return true;
-                }
-            }
-            return false;
+            return $scope.current_user.on_council || $scope.current_user.on_governing_board;
         };
 
         $scope.checkEntries = function () {

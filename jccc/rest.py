@@ -214,12 +214,7 @@ class AllocationViewSet(viewsets.ModelViewSet):
     def bulk_upload(selfself, request, pk=None):
         entries = request.DATA.get('entries')
 
-        auth = False
-        for g in request.user.groups.all():
-            if g.groupprofile.group_type in (
-                GroupProfile.COUNCIL_GROUP_TYPE, GroupProfile.GOV_BOARD_GROUP_TYPE):
-                auth = True
-                break
+        auth = request.user.on_council() or request.user.on_governing_board()
 
         if not auth:
             return Response({'error', 'unauthorized'}, status=403)
@@ -388,12 +383,10 @@ class JCCCApplicationViewSet(viewsets.ModelViewSet):
         if not 'endorsement' in request.DATA:
             return Response({'error': 'bad request'}, status=400)
 
-        groups = request.user.groups.all()
-        for group in groups:
-            if group.groupprofile.group_type == GroupProfile.GOV_BOARD_GROUP_TYPE:
-                jccc_app.endorsement = request.DATA.get('endorsement')
-                jccc_app.save()
-                return Response({'result': 'ok'})
+        if request.user.on_governing_board():
+            jccc_app.endorsement = request.DATA.get('endorsement')
+            jccc_app.save()
+            return Response({'result': 'ok'})
 
         return Response({'error': 'not authorized'}, status=403)
 
