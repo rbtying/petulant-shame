@@ -356,7 +356,7 @@ class JCCCApplicationViewSet(viewsets.ModelViewSet):
     def upload_file(self, request, pk=None, *args, **kwargs):
         jccc_app = get_object_or_404(JCCCApplication.objects.all(), pk=pk)
         uploaded_files = []
-        if request.user.email in jccc_app.editors:
+        if request.user.email in jccc_app.editors or request.user.on_council():
             print request.DATA, request.FILES
             files = request.FILES.getlist('file')
             for f in files:
@@ -374,7 +374,7 @@ class JCCCApplicationViewSet(viewsets.ModelViewSet):
     @action()
     def delete_file(self, request, pk=None, *args, **kwargs):
         jccc_app = get_object_or_404(JCCCApplication.objects.all(), pk=pk)
-        if request.user.email in jccc_app.editors and jccc_app.status == JCCCApplication.STATUS_PENDING:
+        if request.user.email in jccc_app.editors or request.user.on_council():
             fid = request.DATA.get('file')
             af = get_object_or_404(AttachedFile.objects.all(), pk=fid)
             af.delete()
@@ -447,7 +447,35 @@ class JCCCApplicationViewSet(viewsets.ModelViewSet):
             return Response({'result': 'ok'})
         else:
             return Response({'error': 'bad request'}, status=400)
-        pass
+
+    @action()
+    def file(self, request, pk=None, *args, **kwargs):
+        jccc_app = get_object_or_404(JCCCApplication.objects.all(), pk=pk)
+        rev = request.DATA.get('revenue')
+        exp = request.DATA.get('expenditures')
+
+        if request.user.email in jccc_app.editors or request.user.on_council():
+            jccc_app.actual_revenues = rev
+            jccc_app.actual_expenditures = exp
+            jccc_app.status = JCCCApplication.STATUS_FILED
+            jccc_app.save()
+            return Response({'result', 'ok'})
+        else:
+            return Response({'error': 'not authorized'}, status=403)
+
+    @action()
+    def complete(self, request, pk=None, *args, **kwargs):
+        jccc_app = get_object_or_404(JCCCApplication.objects.all(), pk=pk)
+        amt = request.DATA.get('amt')
+
+        if request.user.on_council():
+            jccc_app.transferred_amount = amt
+            jccc_app.status = JCCCApplication.STATUS_COMPLETE
+            jccc_app.save()
+            return Response({'result', 'ok'})
+        else:
+            return Response({'error': 'not authorized'}, status=403)
+
 
     @action()
     def deny(self, request, pk=None, *args, **kwargs):

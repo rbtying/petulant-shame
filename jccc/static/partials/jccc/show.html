@@ -36,6 +36,30 @@
                 <td>{{ db.current_application.current_balance | currency }}</td>
             </tr>
             <tr>
+                <th>Projected budget</th>
+                <td>
+                    <span style="color:red" ng-show="db.current_application.projected_expenditures">
+                        -{{ db.current_application.projected_expenditures | currency }}
+                    </span>
+                    &nbsp;
+                    <span style="color:green" ng-show="db.current_application.projected_revenues">
+                        +{{ db.current_application.projected_revenues | currency }}
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <th>Actual budget</th>
+                <td>
+                    <span style="color:red" ng-show="db.current_application.actual_expenditures">
+                        -{{ db.current_application.actual_expenditures | currency }}
+                    </span>
+                    &nbsp;
+                    <span style="color:green" ng-show="db.current_application.actual_revenues">
+                        +{{ db.current_application.actual_revenues | currency }}
+                    </span>
+                </td>
+            </tr>
+            <tr>
                 <th>Updated time</th>
                 <td>{{ db.current_application.updated_time | date:'medium' }}</td>
             </tr>
@@ -130,6 +154,44 @@
     </div>
     <div class="row" ng-if="current_user.on_council || db.current_application.editors.indexOf(current_user.email) > -1">
         <div class="col-md-12">
+            <div ng-if="db.current_application.status == 'FILE' && current_user.on_council">
+                <div class="btn btn-default" ng-disabled="complete_form.$invalid" ng-click="completeApplication()">Complete application</div>
+                <form name="complete_form">
+                    <div class="form-group">
+                        <label for="transferred_amount">Transferred amount</label>
+                        <input name="transferred_amount" type="number" class="form-control"
+                               id="jccc-transferred_amount"
+                               ng-model="db.current_application.transferred_amount"
+                               required>
+                    </div>
+                </form>
+
+            </div>
+            <div ng-if="db.current_application.status == 'APRV' || db.current_application.status == 'FILE'">
+                <p>Please upload your receipts with filenames of the form <code>receipt-expense_name-expense_date.pdf</code></p>
+                <div class="btn btn-default" ng-file-select="uploadFile($files)" data-multiple>Add receipt</div>
+                <div class="btn btn-success" ng-disabled="rev_form.$invalid" ng-click="fileApplication()">File application</div>
+                <form name="rev_form">
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label for="actual_expenditures">Actual expenditures</label>
+                                <input name="actual_expenditures" type="number" class="form-control"
+                                       id="jccc-actual_expenditures"
+                                       ng-model="db.current_application.actual_expenditures"
+                                       required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="actual_revenues">Actual revenues</label>
+                                <input name="actual_revenues" type="number" class="form-control"
+                                       id="jccc-actual_revenues"
+                                       ng-model="db.current_application.actual_revenues"
+                                       required>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
             <div ng-if="db.current_application.status == 'PEND'">
                 <div class="btn btn-default" ng-file-select="uploadFile($files)" data-multiple>Add attachment</div>
                 <a href="#/jccc/{{ db.current_application.id }}/edit" class="btn btn-default">Edit</a>

@@ -148,6 +148,7 @@ controllers
                         $scope.notify('info', 'Created group #' + result.id);
                         $scope.db.current_group = result;
                         $location.path('/student_groups/' + result.id);
+                        $scope.reloadData();
                         mutex = false;
                     }, function (error) {
                         $scope.notify('danger', 'Could not create group ' + $scope.db.current_group.name);

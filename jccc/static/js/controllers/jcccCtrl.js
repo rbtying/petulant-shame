@@ -236,13 +236,13 @@ controllers
             API.jccc_app.approve($scope.db.current_application.id, $scope.db.current_application.approved_amount, $scope.db.notes)
                 .then(function (result) {
                     mutex = false;
-                    $scope.notify('info', 'Approved JCCC application #' + $scope.db.current_application.id)
+                    $scope.notify('info', 'Approved JCCC application #' + $scope.db.current_application.id);
                     get_specific();
                 }, function (error) {
                     mutex = false;
                     $scope.notify('danger', 'Failed to approve JCCC Application', error);
                 });
-        }
+        };
 
         $scope.denyApplication = function () {
             if (mutex) {
@@ -263,5 +263,39 @@ controllers
                     mutex = false;
                     $scope.notify('danger', 'Failed to deny JCCC Application', error);
                 });
-        }
+        };
+
+        $scope.fileApplication = function () {
+            if (mutex) {
+                return;
+            }
+            mutex = true;
+
+            API.jccc_app.file($scope.db.current_application.id, $scope.db.current_application.actual_revenues, $scope.db.current_application.actual_expenditures)
+                .then(function (result) {
+                    mutex = false;
+                    $scope.notify('info', 'Filed JCCC application #' + $scope.db.current_application.id);
+                    get_specific();
+                }, function (error) {
+                    mutex = false;
+                    $scope.notify('danger', 'Failed to file JCCC Application', error);
+                });
+        };
+
+        $scope.completeApplication = function () {
+            if (mutex) {
+                return;
+            }
+            mutex = true;
+
+            API.jccc_app.complete($scope.db.current_application.id, $scope.db.current_application.transferred_amount)
+                .then(function (result) {
+                    mutex = false;
+                    $scope.notify('info', 'Completed JCCC application #' + $scope.db.current_application.id);
+                    get_specific();
+                }, function (error) {
+                    mutex = false;
+                    $scope.notify('danger', 'Failed to complete JCCC Application', error);
+                });
+        };
     });

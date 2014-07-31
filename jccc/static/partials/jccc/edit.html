@@ -102,6 +102,26 @@
                 </div>
 
                 <div class="form-group">
+                    <div class="col-md-6">
+                        <label for="projected_expenditures">Expected expenditures</label>
+                        <input name="projected_expenditures" type="number" class="form-control"
+                               id="jccc-projected_expenditures"
+                               ng-model="db.current_application.projected_expenditures"
+                               required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-6">
+                        <label for="projected_revenues">Expected revenues</label>
+                        <input name="projected_revenues" type="number" class="form-control"
+                               id="jccc-projected_revenues"
+                               ng-model="db.current_application.projected_revenues"
+                               required>
+                    </div>
+                </div>
+
+                <div class="form-group">
                     <div class="col-md-12">
                         <label for="other">
                             If your total request exceeds the difference between your expenses and revenue, or your current balance, please explain:

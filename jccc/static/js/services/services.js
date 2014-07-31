@@ -117,6 +117,18 @@ facu.factory('API',
             };
         }
 
+        var whttp = function (options) {
+            var def = $q.defer();
+            $http(options)
+                .then(function (success) {
+                    def.resolve(success);
+                }, function (error) {
+                    def.reject(error);
+                });
+            return def.promise;
+        };
+
+
 
         var api_calls = {
             alloc: create_api_call(alloc),
@@ -131,7 +143,7 @@ facu.factory('API',
 
         api_calls.alloc.bulk_upload = function (entries) {
             $log.debug('sending bulk upload...');
-            return $http({
+            return whttp({
                 url: baseurl + alloc + '0/bulk_upload/',
                 method: 'POST',
                 data: {
@@ -142,7 +154,7 @@ facu.factory('API',
 
         api_calls.groups.set_editors = function (id, editors) {
             $log.debug('setting editors for group ' + id);
-            return $http({
+            return whttp({
                 url: baseurl + groups + id + '/set_editors/',
                 method: 'POST',
                 data: editors
@@ -151,7 +163,7 @@ facu.factory('API',
 
         api_calls.student_groups.set_editors = function (id, editors) {
             $log.debug('setting editors for student_group ' + id);
-            return $http({
+            return whttp({
                 url: baseurl + student_groups + id + '/set_editors/',
                 method: 'POST',
                 data: editors
@@ -160,7 +172,7 @@ facu.factory('API',
 
         api_calls.users.me = function () {
             $log.debug('getting current user');
-            return $http({
+            return whttp({
                 url: baseurl + users + '0/me/',
                 method: 'GET'
             });
@@ -168,7 +180,7 @@ facu.factory('API',
 
         api_calls.jccc_app.submit = function(id) {
             $log.debug('submitting jccc app ', id);
-            return $http({
+            return whttp({
                 url: baseurl + jccc_app + id + '/submit/',
                 method: 'POST'
             });
@@ -176,7 +188,7 @@ facu.factory('API',
 
         api_calls.jccc_app.schedule = function(id, schedule_date) {
             $log.debug('scheduling jccc app ', id);
-            return $http({
+            return whttp({
                 url: baseurl + jccc_app + id + '/schedule/',
                 method: 'POST',
                 data: {
@@ -187,7 +199,7 @@ facu.factory('API',
 
         api_calls.jccc_app.approve = function(id, approval_amt, notes) {
             $log.debug('approving jccc app ', id);
-            return $http({
+            return whttp({
                 url: baseurl + jccc_app + id + '/approve/',
                 method: 'POST',
                 data: {
@@ -199,7 +211,7 @@ facu.factory('API',
 
         api_calls.jccc_app.reject = function(id, notes) {
             $log.debug('rejecting jccc app ', id);
-            return $http({
+            return whttp({
                 url: baseurl + jccc_app + id + '/reject/',
                 method: 'POST',
                 data: {
@@ -210,11 +222,32 @@ facu.factory('API',
 
         api_calls.jccc_app.endorse = function(id, endorsement) {
             $log.debug('endorsing jccc app ', id);
-            return $http({
+            return whttp({
                 url: baseurl + jccc_app + id + '/endorse/',
                 method: 'POST',
                 data: {
-                    'endorsement': endorsement
+                    endorsement: endorsement
+                }
+            });
+        };
+
+        api_calls.jccc_app.file = function(id, revenue, expenditures) {
+            return whttp({
+                url: baseurl + jccc_app + id + '/file/',
+                method: 'POST',
+                data: {
+                    revenue: revenue,
+                    expenditures: expenditures
+                }
+            });
+        };
+
+        api_calls.jccc_app.complete = function(id, transferred_amt) {
+            return whttp({
+                url: baseurl + jccc_app + id + '/complete/',
+                method: 'POST',
+                data: {
+                    amt: transferred_amt
                 }
             });
         };
@@ -229,7 +262,7 @@ facu.factory('API',
         };
 
         api_calls.jccc_app.delete_file = function(id, fileid) {
-            return $http({
+            return whttp({
                 url: baseurl + jccc_app + id + '/delete_file/',
                 method: 'POST',
                 data: {

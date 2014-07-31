@@ -127,6 +127,7 @@ controllers
                     mutex = false;
                     $scope.notify('info', 'Successfully uploaded CSV');
                     $location.path('/allocations');
+                    $scope.reloadData();
                 }, function (error) {
                     mutex = false;
                     $scope.notify('danger', 'Could not upload CSV');

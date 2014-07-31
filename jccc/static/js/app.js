@@ -32,6 +32,12 @@ facu.config(['$routeProvider', '$locationProvider', '$httpProvider', function ($
             'current_user': current_user_func
         }
     });
+    $routeProvider.when('/about/constitution', {
+        templateUrl: '/static/partials/constitution.html',
+        resolve: {
+            'current_user': current_user_func
+        }
+    });
     $routeProvider.when('/about', {
         templateUrl: '/static/partials/about.html',
         resolve: {

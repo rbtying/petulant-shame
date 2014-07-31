@@ -141,10 +141,11 @@ class JCCCApplicationSerializer(serializers.ModelSerializer):
         request = self.context.get('request', None)
         view = self.context.get('view', None)
         if request and view and getattr(view, 'object', None):
-			fields['status'].read_only = True
-			fields['notes'].read_only = True
-			fields['approved_amount'].read_only = True
-			fields['endorsement'].read_only = True
+            fields['status'].read_only = True
+            fields['notes'].read_only = True
+            fields['approved_amount'].read_only = True
+            fields['endorsement'].read_only = True
+            fields['transferred_amount'].read_only = True
 
         return fields
 
@@ -159,7 +160,9 @@ class JCCCApplicationSerializer(serializers.ModelSerializer):
         'contact_phone', 'contact_position', 'editors', 'description', 'event_name', 'event_time',
         'event_location', 'event_attendance', 'event_recurring', 'event_description',
         'event_advertisement', 'event_audience', 'current_balance', 'alternate_funding',
-        'alternate_plans', 'advisor_advice', 'endorsement')
+        'alternate_plans', 'advisor_advice', 'endorsement', 'projected_expenditures',
+        'projected_revenues', 'actual_expenditures', 'actual_revenues', 'transferred_amount')
+
         depth = 0
 
 

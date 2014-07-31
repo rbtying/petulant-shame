@@ -125,12 +125,16 @@ class FundingRequest(models.Model):
     STATUS_SCHEDULED = 'SCHD'
     STATUS_APPROVED = 'APRV'
     STATUS_DENIED = 'DENY'
+    STATUS_FILED = 'FILE'
+    STATUS_COMPLETE = 'COMP'
     STATUS_TYPES = (
         (STATUS_PENDING, 'Pending'),
         (STATUS_SUBMITTED, 'Submitted'),
         (STATUS_SCHEDULED, 'Scheduled'),
         (STATUS_APPROVED, 'Approved'),
         (STATUS_DENIED, 'Denied'),
+        (STATUS_FILED, 'Filed'),
+        (STATUS_COMPLETE, 'Complete')
     )
 
     # request basics
@@ -145,6 +149,13 @@ class FundingRequest(models.Model):
     updated_time = models.DateTimeField(auto_now=True)
     submitted_time = models.DateTimeField(null=True)
     scheduled_time = models.DateTimeField(null=True)
+
+    projected_expenditures = models.FloatField(null=True)
+    projected_revenues = models.FloatField(null=True)
+    actual_expenditures = models.FloatField(null=True)
+    actual_revenues = models.FloatField(null=True)
+
+    transferred_amount = models.FloatField(null=True)
 
     # group details
     requester = models.ForeignKey(StudentGroup, null=True)
