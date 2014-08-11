@@ -25,7 +25,7 @@ controllers
                 API.alloc.list({
                     recipient__id: $scope.db.current_group.id
                 }).then(function (alloc) {
-                    $scope.db.current_group.allocations = alloc.results;
+                    $scope.db.current_group.allocations = alloc;
                 });
 
                 $scope.plot_data = {
@@ -152,8 +152,13 @@ controllers
         $log.log('init studentGroupCtrl');
         $scope.current_user = current_user;
 
+        $scope.filter_group_id = null;
+        if ($location.search().governing_board__id) {
+            $scope.filter_group_id = $location.search().governing_board__id;
+        }
+
         API.student_groups.list($location.search()).then(function(data) {
-            $scope.db.current_groups = data.results;
+            $scope.db.current_groups = data;
         });
 
         $scope.can_add_group = function () {

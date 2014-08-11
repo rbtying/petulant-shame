@@ -5,7 +5,7 @@ controllers
         $log.log('init adminCtrl');
 
         API.groups.list().then(function(data) {
-            $log.log('groups', data.results);
-            $scope.groups = data.results;
+            $log.log('groups', data);
+            $scope.groups = data;
         });
     });

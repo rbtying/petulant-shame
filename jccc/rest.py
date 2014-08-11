@@ -254,11 +254,11 @@ class AllocationViewSet(viewsets.ModelViewSet):
             if not contact in g.editors:
                 g.editors.append(contact)
             g.mission = mission
-            g.percent_cc = percent_cc
-            g.percent_bc = percent_bc
-            g.percent_seas = percent_seas
-            g.percent_gs = percent_gs
-            g.percent_grad = percent_grad
+            g.proportion_cc = percent_cc
+            g.proportion_bc = percent_bc
+            g.proportion_seas = percent_seas
+            g.proportion_gs = percent_gs
+            g.proportion_grad = percent_grad
 
             g.save()
 

@@ -11,11 +11,11 @@ controllers
         $scope.reloadData = function () {
             API.groups.list()
                 .then(function (result) {
-                    $scope.db.groups = result.results;
-                    $scope.db.governing_boards = result.results.filter(function (m, idx) {
+                    $scope.db.groups = result;
+                    $scope.db.governing_boards = result.filter(function (m, idx) {
                         return m.groupprofile.group_type == 'GBRD';
                     });
-                    $scope.db.councils = result.results.filter(function (m, idx) {
+                    $scope.db.councils = result.filter(function (m, idx) {
                         return m.groupprofile.group_type == 'CNCL';
                     });
                     $scope.db.groups_by_id = {};
@@ -28,7 +28,7 @@ controllers
                 });
             API.student_groups.list()
                 .then(function (result) {
-                    $scope.db.student_groups = result.results;
+                    $scope.db.student_groups = result;
 
                     $scope.db.student_groups_by_id = {};
                     $scope.db.student_groups_by_name = {};
@@ -41,7 +41,7 @@ controllers
 
             API.users.list()
                 .then(function (result) {
-                    $scope.db.users = result.results;
+                    $scope.db.users = result;
 
                     $scope.db.users_by_id = {};
                     for (var i in $scope.db.users) {

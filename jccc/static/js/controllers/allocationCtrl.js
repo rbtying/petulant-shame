@@ -9,7 +9,7 @@ controllers
         var ensure_list = function () {
             API.alloc.list($location.search())
                 .then(function (data) {
-                    $scope.db.allocations = data.results;
+                    $scope.db.allocations = data;
                     $scope.allocation_years = ['all'];
                     $scope.allocation_sources = [{
                         name: 'all',

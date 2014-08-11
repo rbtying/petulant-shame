@@ -10,7 +10,7 @@ controllers
             var params = $location.search();
             API.jccc_app.list(params)
                 .then(function (result) {
-                    $scope.applications = result.results;
+                    $scope.applications = result;
                 });
         };
 
@@ -22,7 +22,7 @@ controllers
                     API.attachments.list({
                         request: $scope.db.current_application.id
                     }).then(function (data) {
-                        $scope.db.current_application.attachments = data.results;
+                        $scope.db.current_application.attachments = data;
                     });
                 });
         };

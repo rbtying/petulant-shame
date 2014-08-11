@@ -35,10 +35,13 @@
                 <strong>GBB</strong>: {{ db.current_group.sga_acct_number }}
             </p>
             <p ng-show="db.current_group.cu_acct_number">
-                <strong>CU (account, department, project):</strong>
-                {{ db.current_group.cu_acct_number }},
-                {{ db.current_group.cu_dept_number }},
-                {{ db.current_group.cu_proj_number }}
+                <strong>CU account number:</strong> {{ db.current_group.cu_acct_number }}
+            </p>
+            <p ng-show="db.current_group.cu_dept_number">
+                <strong>CU department number:</strong> {{ db.current_group.cu_dept_number }}
+            </p>
+            <p ng-show="db.current_group.cu_proj_number">
+                <strong>CU project number:</strong> {{ db.current_group.cu_proj_number }}
             </p>
         </div>
     </div>

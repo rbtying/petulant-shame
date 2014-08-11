@@ -159,7 +159,7 @@
         },
         "model": "jccc.groupprofile",
         "pk": 10
-    }
+    },
     {
         "fields": {
             "group_type": "GBRD",

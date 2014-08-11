@@ -19,7 +19,7 @@ controllers
         };
 
         $scope.checkEntries = function () {
-            var keys_to_check = ['governing_board_exists', 'group_not_empty', 'acct_number_exists', 'contact_exists', 'sum_valid'];
+            var keys_to_check = ['governing_board_exists', 'group_not_empty', 'acct_number_exists', 'sum_valid'];
             for (var i = 0; i < $scope.db.entries.length; i++) {
                 if ($scope.db.errors[i].length > 0) {
                     $scope.entries_valid = false;
@@ -52,7 +52,7 @@ controllers
             info.governing_board_exists = !!$scope.db.groups_by_name[data.governing_board];
             info.group_exists = !!$scope.db.student_groups_by_name[data.group_name];
             info.group_not_empty = !!data.group_name;
-            info.acct_number_exists = (!!data.sga_acct_number) || !!(data.cu_acct_number && data.cu_dept_number && data.cu_project_number);
+            info.acct_number_exists = !!data.sga_acct_number || !!data.cu_acct_number || !!data.cu_dept_number || data.cu_project_number;
 
             info.contact_exists = email_re.test(data.contact);
             info.mission_exists = !!data.mission;
