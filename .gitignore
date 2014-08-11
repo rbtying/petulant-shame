@@ -6,3 +6,5 @@ fundingapp/local_settings.py
 funding
 .idea/
 media/
+db.sqlite3
+env/
