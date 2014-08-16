@@ -48,6 +48,7 @@ class AttachmentViewSet(viewsets.ModelViewSet):
     queryset = AttachedFile.objects.all()
     serializer_class = AttachedFileSerializer
     permission_classes = (permissions.ReadOnly,)
+    filter_fields = ('request',)
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -211,7 +212,7 @@ class AllocationViewSet(viewsets.ModelViewSet):
                       'max_year', 'year')
 
     @action()
-    def bulk_upload(selfself, request, pk=None):
+    def bulk_upload(self, request, pk=None):
         entries = request.DATA.get('entries')
 
         auth = request.user.on_council() or request.user.on_governing_board()
@@ -281,6 +282,9 @@ class FundingRequestViewSet(viewsets.ModelViewSet):
 
     permission_classes = (permissions.ReadOnly,)
 
+    required_submit_fields = ('title', 'requester', 'contact')
+    baseclass = FundingRequest
+
     class FundingFilter(django_filters.FilterSet):
         min_requested = django_filters.NumberFilter(name='requested_amount', lookup_type='gte')
         max_requested = django_filters.NumberFilter(name='requested_amount', lookup_type='lte')
@@ -301,44 +305,137 @@ class FundingRequestViewSet(viewsets.ModelViewSet):
                       'created_after', 'created_before', 'submitted_after', 'submitted_before',
                       'requester__id', 'funder__id')
 
+    filter_class = FundingFilter
+
+    @action()
+    def upload_file(self, request, pk=None, *args, **kwargs):
+        funding_req = get_object_or_404(self.baseclass.objects.all(), pk=pk)
+        uploaded_files = []
+        if request.user.email in funding_req.editors or request.user.on_council():
+            files = request.FILES.getlist('file')
+            for f in files:
+                af = AttachedFile(request=funding_req, name=f.name)
+                af.attachment.save(f.name, f, save=True)
+                af.save()
+                uploaded_files.append(af.id)
+            return Response({'result': uploaded_files})
+        else:
+            return Response({'error': 'not authorized'}, status=403)
+
+    @action()
+    def delete_file(self, request, pk=None, *args, **kwargs):
+        funding_req = get_object_or_404(self.baseclass.objects.all(), pk=pk)
+        if request.user.email in funding_req.editors or request.user.on_council():
+            fid = request.DATA.get('file')
+            af = get_object_or_404(AttachedFile.objects.all(), pk=fid)
+            af.delete()
+            return Response({'result': 'ok'})
+        else:
+            return Response({'error': 'not authorized'}, status=403)
+
+
     @action()
     def submit(self, request, pk=None, *args, **kwargs):
-        pass
+        funding_req = get_object_or_404(self.baseclass.objects.all(), pk=pk)
+        if request.user.email in funding_req.editors and funding_req.status == self.baseclass.STATUS_PENDING:
+            required_fields = self.required_submit_fields
+
+            missing_fields = []
+
+            for f in required_fields:
+                if not getattr(funding_req, f):
+                    missing_fields.append(f)
+
+            if not missing_fields:
+                funding_req.status = self.baseclass.STATUS_SUBMITTED
+                funding_req.save()
+                return Response({'result': 'ok'})
+            else:
+                return Response({'error': 'missing fields', 'fields': missing_fields}, status=400)
+        else:
+            return Response({'error': 'bad request'}, status=400)
 
     @action()
     def schedule(self, request, pk=None, *args, **kwargs):
-        pass
+        funding_req = get_object_or_404(self.baseclass.objects.all(), pk=pk)
+        if request.user.on_council():
+            dt = dateutil.parser.parse(request.DATA.get('date'))
+            funding_req.scheduled_time = dt
+            funding_req.status = self.baseclass.STATUS_SCHEDULED
+            funding_req.save()
+            return Response({'result': 'ok'})
+        else:
+            return Response({'error': 'bad request'}, status=400)
 
     @action()
     def approve(self, request, pk=None, *args, **kwargs):
-        pass
+        funding_req = get_object_or_404(self.baseclass.objects.all(), pk=pk)
+        amt = request.DATA.get('amt')
+        notes = request.DATA.get('notes')
+        if request.user.on_council() and amt and notes:
+            funding_req.status = self.baseclass.STATUS_APPROVED
+            funding_req.approved_amount = amt
+            funding_req.notes = notes
+            funding_req.save()
+            return Response({'result': 'ok'})
+        else:
+            return Response({'error': 'bad request'}, status=400)
+
+    @action()
+    def file(self, request, pk=None, *args, **kwargs):
+        funding_req = get_object_or_404(self.baseclass.objects.all(), pk=pk)
+        rev = request.DATA.get('revenue')
+        exp = request.DATA.get('expenditures')
+
+        if request.user.email in funding_req.editors or request.user.on_council():
+            funding_req.actual_revenues = rev
+            funding_req.actual_expenditures = exp
+            funding_req.status = self.baseclass.STATUS_FILED
+            funding_req.save()
+            return Response({'result', 'ok'})
+        else:
+            return Response({'error': 'not authorized'}, status=403)
+
+    @action()
+    def complete(self, request, pk=None, *args, **kwargs):
+        funding_req = get_object_or_404(self.baseclass.objects.all(), pk=pk)
+        amt = request.DATA.get('amt')
+
+        if request.user.on_council():
+            funding_req.transferred_amount = amt
+            funding_req.status = self.baseclass.STATUS_COMPLETE
+            funding_req.save()
+            return Response({'result', 'ok'})
+        else:
+            return Response({'error': 'not authorized'}, status=403)
+
 
     @action()
     def deny(self, request, pk=None, *args, **kwargs):
-        pass
+        funding_req = get_object_or_404(self.baseclass.objects.all(), pk=pk)
+        notes = request.DATA.get('notes')
+        if request.user.on_council() and notes:
+            funding_req.status = self.baseclass.STATUS_DENIED
+            funding_req.notes = notes
+            funding_req.save()
+            return Response({'result': 'ok'})
+        else:
+            return Response({'error': 'bad request'}, status=400)
 
-    filter_class = FundingFilter
 
-
-class JCCCApplicationViewSet(viewsets.ModelViewSet):
+class JCCCApplicationViewSet(FundingRequestViewSet):
     queryset = JCCCApplication.objects.all()
     serializer_class = JCCCApplicationSerializer
     permission_classes = (permissions.IsEditorAndState,)
 
-    class JCCCApplicationFilter(django_filters.FilterSet):
-        min_requested = django_filters.NumberFilter(name='requested_amount', lookup_type='gte')
-        max_requested = django_filters.NumberFilter(name='requested_amount', lookup_type='lte')
+    required_submit_fields = (
+        'title', 'requester', 'requested_amount', 'current_balance', 'funder', 'contact',
+        'contact_phone', 'contact_position', 'event_audience', 'event_description',
+        'event_advertisement', 'alternate_funding', 'alternate_plans', 'advisor_advice',
+        'endorsement')
+    baseclass = JCCCApplication
 
-        min_allocated = django_filters.NumberFilter(name='allocated_amount', lookup_type='gte')
-        max_allocated = django_filters.NumberFilter(name='allocated_amount', lookup_type='lte')
-
-        created_after = django_filters.DateFilter(name='created_time', lookup_type='gte')
-        created_before = django_filters.DateFilter(name='created_time', lookup_type='lte')
-        submitted_after = django_filters.DateFilter(name='submitted_time', lookup_type='gte')
-        scheduled_before = django_filters.DateFilter(name='scheduled_time', lookup_type='lte')
-        scheduled_after = django_filters.DateFilter(name='scheduled_time', lookup_type='gte')
-        submitted_before = django_filters.DateFilter(name='submitted_time', lookup_type='lte')
-
+    class JCCCApplicationFilter(FundingRequestViewSet.FundingFilter):
         class Meta:
             model = JCCCApplication
             fields = ('status', 'min_requested', 'max_requested', 'min_allocated', 'max_allocated',
@@ -346,36 +443,6 @@ class JCCCApplicationViewSet(viewsets.ModelViewSet):
                       'requester__id', 'funder__id', 'contact__id')
 
     filter_class = JCCCApplicationFilter
-
-    @action()
-    def upload_file(self, request, pk=None, *args, **kwargs):
-        jccc_app = get_object_or_404(JCCCApplication.objects.all(), pk=pk)
-        uploaded_files = []
-        if request.user.email in jccc_app.editors or request.user.on_council():
-            print request.DATA, request.FILES
-            files = request.FILES.getlist('file')
-            for f in files:
-                af = AttachedFile(request=jccc_app, name=f.name)
-                af.attachment.save(f.name, f, save=True)
-                af.save()
-                uploaded_files.append(af.id)
-
-            print uploaded_files
-
-            return Response({'result': uploaded_files})
-        else:
-            return Response({'error': 'not authorized'}, status=403)
-
-    @action()
-    def delete_file(self, request, pk=None, *args, **kwargs):
-        jccc_app = get_object_or_404(JCCCApplication.objects.all(), pk=pk)
-        if request.user.email in jccc_app.editors or request.user.on_council():
-            fid = request.DATA.get('file')
-            af = get_object_or_404(AttachedFile.objects.all(), pk=fid)
-            af.delete()
-            return Response({'result': 'ok'})
-        else:
-            return Response({'error': 'not authorized'}, status=403)
 
     @action()
     def endorse(self, request, pk=None, *args, **kwargs):
@@ -390,118 +457,19 @@ class JCCCApplicationViewSet(viewsets.ModelViewSet):
 
         return Response({'error': 'not authorized'}, status=403)
 
-    @action()
-    def submit(self, request, pk=None, *args, **kwargs):
-        jccc_app = get_object_or_404(JCCCApplication.objects.all(), pk=pk)
-        if request.user.email in jccc_app.editors and jccc_app.status == JCCCApplication.STATUS_PENDING:
-            required_fields = (
-            'title', 'requester', 'requested_amount', 'current_balance', 'funder', 'contact',
-            'contact_phone', 'contact_position', 'event_audience', 'event_description',
-            'event_advertisement', 'alternate_funding', 'alternate_plans', 'advisor_advice',
-            'endorsement')
 
-            missing_fields = []
-
-            for f in required_fields:
-                if not getattr(jccc_app, f):
-                    missing_fields.append(f)
-
-            if not missing_fields:
-                jccc_app.status = JCCCApplication.STATUS_SUBMITTED
-                jccc_app.save()
-                return Response({'result': 'ok'})
-            else:
-                return Response({'error': 'missing fields', 'fields': missing_fields}, status=400)
-        else:
-            return Response({'error': 'bad request'}, status=400)
-
-    @action()
-    def schedule(self, request, pk=None, *args, **kwargs):
-        jccc_app = get_object_or_404(JCCCApplication.objects.all(), pk=pk)
-        if request.user.on_council():
-            dt = dateutil.parser.parse(request.DATA.get('date'))
-            jccc_app.scheduled_time = dt
-            jccc_app.status = JCCCApplication.STATUS_SCHEDULED
-            jccc_app.save()
-            return Response({'result': 'ok'})
-        else:
-            return Response({'error': 'bad request'}, status=400)
-
-    @action()
-    def approve(self, request, pk=None, *args, **kwargs):
-        jccc_app = get_object_or_404(JCCCApplication.objects.all(), pk=pk)
-        amt = request.DATA.get('amt')
-        notes = request.DATA.get('notes')
-        if request.user.on_council() and amt and notes:
-            jccc_app.status = JCCCApplication.STATUS_APPROVED
-            jccc_app.approved_amount = amt
-            jccc_app.notes = notes
-            jccc_app.save()
-            return Response({'result': 'ok'})
-        else:
-            return Response({'error': 'bad request'}, status=400)
-
-    @action()
-    def file(self, request, pk=None, *args, **kwargs):
-        jccc_app = get_object_or_404(JCCCApplication.objects.all(), pk=pk)
-        rev = request.DATA.get('revenue')
-        exp = request.DATA.get('expenditures')
-
-        if request.user.email in jccc_app.editors or request.user.on_council():
-            jccc_app.actual_revenues = rev
-            jccc_app.actual_expenditures = exp
-            jccc_app.status = JCCCApplication.STATUS_FILED
-            jccc_app.save()
-            return Response({'result', 'ok'})
-        else:
-            return Response({'error': 'not authorized'}, status=403)
-
-    @action()
-    def complete(self, request, pk=None, *args, **kwargs):
-        jccc_app = get_object_or_404(JCCCApplication.objects.all(), pk=pk)
-        amt = request.DATA.get('amt')
-
-        if request.user.on_council():
-            jccc_app.transferred_amount = amt
-            jccc_app.status = JCCCApplication.STATUS_COMPLETE
-            jccc_app.save()
-            return Response({'result', 'ok'})
-        else:
-            return Response({'error': 'not authorized'}, status=403)
-
-
-    @action()
-    def deny(self, request, pk=None, *args, **kwargs):
-        jccc_app = get_object_or_404(JCCCApplication.objects.all(), pk=pk)
-        notes = request.DATA.get('notes')
-        if request.user.on_council() and notes:
-            jccc_app.status = JCCCApplication.STATUS_DENIED
-            jccc_app.notes = notes
-            jccc_app.save()
-            return Response({'result': 'ok'})
-        else:
-            return Response({'error': 'bad request'}, status=400)
-
-
-class CIFApplicationViewSet(viewsets.ModelViewSet):
+class CIFApplicationViewSet(FundingRequestViewSet):
     queryset = CIFApplication.objects.all()
     serializer_class = CIFApplicationSerializer
     permission_classes = (permissions.IsEditor,)
 
-    class CIFApplicationFilter(django_filters.FilterSet):
-        min_requested = django_filters.NumberFilter(name='requested_amount', lookup_type='gte')
-        max_requested = django_filters.NumberFilter(name='requested_amount', lookup_type='lte')
+    required_submit_fields = (
+        'title', 'requester', 'requested_amount', 'contact', 'editors', 'description', 'financial_history', 'roadblock',
+        'best_case_description', 'best_case_budget', 'moderate_case_description', 'moderate_case_budget',
+        'worst_case_description', 'worst_case_budget', 'endorsement')
+    baseclass = CIFApplication
 
-        min_allocated = django_filters.NumberFilter(name='allocated_amount', lookup_type='gte')
-        max_allocated = django_filters.NumberFilter(name='allocated_amount', lookup_type='lte')
-
-        created_after = django_filters.DateFilter(name='created_time', lookup_type='gte')
-        created_before = django_filters.DateFilter(name='created_time', lookup_type='lte')
-        submitted_after = django_filters.DateFilter(name='submitted_time', lookup_type='gte')
-        scheduled_before = django_filters.DateFilter(name='scheduled_time', lookup_type='lte')
-        scheduled_after = django_filters.DateFilter(name='scheduled_time', lookup_type='gte')
-        submitted_before = django_filters.DateFilter(name='submitted_time', lookup_type='lte')
-
+    class CIFApplicationFilter(FundingRequestViewSet.FundingFilter):
         class Meta:
             model = CIFApplication
             fields = ('status', 'min_requested', 'max_requested', 'min_allocated', 'max_allocated',
@@ -510,27 +478,31 @@ class CIFApplicationViewSet(viewsets.ModelViewSet):
 
     filter_class = CIFApplicationFilter
 
+    @action()
+    def endorse(self, request, pk=None, *args, **kwargs):
+        cif_app = get_object_or_404(CIFApplication.objects.all(), pk=pk)
+        if not 'endorsement' in request.DATA:
+            return Response({'error': 'bad request'}, status=400)
 
-class ESCProjectGrantApplicationViewSet(viewsets.ModelViewSet):
+        if request.user.on_governing_board():
+            cif_app.endorsement = request.DATA.get('endorsement')
+            cif_app.save()
+            return Response({'result': 'ok'})
+
+        return Response({'error': 'not authorized'}, status=403)
+
+
+class ESCProjectGrantApplicationViewSet(FundingRequestViewSet):
     queryset = ESCProjectGrantApplication.objects.all()
     serializer_class = ESCProjectGrantApplicationSerializer
 
     permission_classes = (permissions.IsEditor,)
+    required_submit_fields = (
+        'title', 'requester', 'contact', 'editors', 'members', 'description', 'materials', 'tools', 'workload',
+        'fund_usage', 'schedule', 'safety', 'failure', 'feasibility', 'benefit', 'donation', 'advisor')
+    baseclass = ESCProjectGrantApplication
 
-    class ESCProjectGrantApplicationFilter(django_filters.FilterSet):
-        min_requested = django_filters.NumberFilter(name='requested_amount', lookup_type='gte')
-        max_requested = django_filters.NumberFilter(name='requested_amount', lookup_type='lte')
-
-        min_allocated = django_filters.NumberFilter(name='allocated_amount', lookup_type='gte')
-        max_allocated = django_filters.NumberFilter(name='allocated_amount', lookup_type='lte')
-
-        created_after = django_filters.DateFilter(name='created_time', lookup_type='gte')
-        created_before = django_filters.DateFilter(name='created_time', lookup_type='lte')
-        submitted_after = django_filters.DateFilter(name='submitted_time', lookup_type='gte')
-        scheduled_before = django_filters.DateFilter(name='scheduled_time', lookup_type='lte')
-        scheduled_after = django_filters.DateFilter(name='scheduled_time', lookup_type='gte')
-        submitted_before = django_filters.DateFilter(name='submitted_time', lookup_type='lte')
-
+    class ESCProjectGrantApplicationFilter(FundingRequestViewSet.FundingFilter):
         class Meta:
             model = ESCProjectGrantApplication
             fields = ('status', 'min_requested', 'max_requested', 'min_allocated', 'max_allocated',

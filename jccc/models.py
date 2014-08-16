@@ -229,13 +229,13 @@ class CIFApplication(FundingRequest):
     roadblock = models.TextField(blank=True)
 
     best_case_description = models.TextField(blank=True)
-    best_case_budget = JSONField(default=[])
+    best_case_budget = JSONField(default={})
 
     moderate_case_description = models.TextField(blank=True)
-    moderate_case_budget = JSONField(default=[])
+    moderate_case_budget = JSONField(default={})
 
     worst_case_description = models.TextField(blank=True)
-    worst_case_budget = JSONField(default=[])
+    worst_case_budget = JSONField(default={})
 
     endorsement = models.TextField(blank=True)
 

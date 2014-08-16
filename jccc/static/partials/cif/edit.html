@@ -1,0 +1,443 @@
+<div class="container" fade-in>
+
+    <div class="row">
+        <div class="col-md-12">
+            <h1 ng-if="db.current_application.id">
+                Editing CIF Application #{{ db.current_application.id }}
+            </h1>
+
+            <h1 ng-if="!db.current_application.id">
+                New CIF Application
+            </h1>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <p>
+                The Capital Investment Fund was created to address the need of student groups who have difficulties
+                securing funding for large-scale overhauls of equipment or supplies.
+            </p>
+
+            <p>
+                Such groups only need an injection
+                of supplemental funds every 3-5 years for revamping now-outdated equipment or technology in order to
+                remain modern, effective, and/or safe. Examples might include Columbia TV’s need to purchase new cameras
+                or Columbia Kayaking’s need to replace their boats for safety reasons. These groups have struggled to
+                finance necessary purchases because of high overhead and historically-based allocations.
+            </p>
+
+            <p>
+                We believe that targeting our resources towards these specific and often-overlooked needs will increase
+                the effectiveness of our financing.
+            </p>
+
+            <p>
+                The Capital Investment Fund is capped at $20,000, and awards are granted in the Fall Term and in the
+                Spring Term. Student groups who apply during the Fall Term will be expected to make purchases during the
+                Spring Term, and student groups who apply in the Spring Term will be expected to make purchases during
+                the following Fall Term. A joint committee of the four student council Vice Presidents of Finance,
+                governing board representatives, and relevant administrators will oversee applications and determine how
+                to allocate funds. The funds will come from the budgets of the Columbia College Student Council (CCSC),
+                the Engineering Student Council (ESC), General Studies Student Council (GSSC), and Student Government
+                Association of Barnard (SGA).
+            </p>
+
+            <p>
+                Eligible groups are asked to consider their needs carefully to determine whether they are a good fit for
+                the Capital Investment fund. Due to the specialized nature of the fund, a Capital Investment Fund award
+                is only granted to a student group once every three years. The group must prove that the grant will be
+                used to benefit the undergraduate community, such as by elevating the level of event programming,
+                providing academic resources, improving community, promoting wellness, or more.
+            </p>
+
+            <p>
+                We expect the nature of a group’s need to be at least $1,000.
+            </p>
+
+            <p>If you have any questions or concerns, please email <a
+                    href="mailto:treasurers@columbia.edu">treasurers@columbia.edu</a></p>
+        </div>
+    </div>
+    <div class="row">
+        <form role="form" name="cif_form" ng-submit="saveApplication()" novalidate>
+            <fieldset>
+                <legend>Application info</legend>
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <label for="title">Title</label>
+                        <input name="title" type="text" class="form-control" id="cif-title"
+                               ng-model="db.current_application.title" ng-disabled="!can_edit()" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <label for="status">Status</label>
+                        <select name="status" class="form-control" id="cif-status"
+                                ng-model="db.current_application.status" disabled>
+                            <option value="PEND">Pending</option>
+                            <option value="SUBM">Submitted</option>
+                            <option value="SCHD">Scheduled</option>
+                            <option value="APRV">Approved</option>
+                            <option value="DENY">Denied</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-6">
+                        <label for="allocation">What is your club allocation?</label>
+                        <input name="allocation" type="text" class="form-control"
+                               id="cif-allocation" placeholder="Select the requesting group first"
+                               ng-model="db.current_group_allocation" disabled>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-6">
+                        <label for="approved_amount">Approved amount</label>
+                        <input name="approved_amount" type="number" class="form-control"
+                               id="cif-approved-amount"
+                               ng-model="db.current_application.approved_amount"
+                               placeholder="This application has not yet been approved"
+                               disabled>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-6">
+                        <label for="requester">What student group is this for?</label>
+                        <select name="requester" class="form-control" id="cif-requester"
+                                ng-model="db.current_application.requester" ng-options="g.id as g.name for g in db.student_groups"
+                                ng-disabled="!can_edit()" required>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-6">
+                        <label for="funder">Who are you requesting funds from?</label>
+                        <select name="funder" class="form-control" id="cif-funder"
+                                ng-model="db.current_application.funder" ng-options="g.id as g.name for g in db.councils"
+                                ng-disabled="!can_edit()" required multiple>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-4">
+                        <label for="contact">Who is the primary contact for this application?</label>
+                        <select name="contact" class="form-control" id="cif-contact"
+                                ng-model="db.current_application.contact" ng-options="u.id as u.email for u in db.users"
+                                ng-disabled="!can_edit()" required>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-4">
+                        <label for="contact_phone">Contact phone</label>
+                        <input name="contact_phone" type="text" class="form-control"
+                               id="cif-contact_phone"
+                               ng-model="db.current_application.contact_phone" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-4">
+                        <label for="contact_position">Contact position</label>
+                        <input name="contact_position" type="text" class="form-control"
+                               id="cif-contact_position"
+                               ng-model="db.current_application.contact_position" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <label for="editors">Who can edit this application? (Columbia emails, comma-separated)</label>
+                        <input name="editors" ng-list="," ng-trim="true" class="form-control"
+                               id="cif-editors" ng-model="db.current_application.editors"
+                               ng-disabled="!can_edit()" required>
+                    </div>
+                </div>
+            </fieldset>
+            <fieldset>
+                <legend>Group History</legend>
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <label for="financial_history">What has been your organization's financial history over the past
+                            2-5 years?</label>
+                        <textarea class="form-control" name="financial_history"
+                                  ng-model="db.current_application.financial_history"
+                                  ng-disabled="!can_edit()" >
+                        </textarea>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <label for="roadblock">So far, what has been the largest roadblock against your organization’s
+                            success or achievement of its mission?</label>
+                        <textarea class="form-control" name="roadblock"
+                                  ng-model="db.current_application.roadblock"
+                                  ng-disabled="!can_edit()" >
+                        </textarea>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <label for="description">How would your organization use the funds if awarded? How will it
+                            benefit the undergraduate community at large?</label>
+                        <textarea class="form-control" name="description"
+                                  ng-model="db.current_application.description"
+                                  ng-disabled="!can_edit()" >
+
+                        </textarea>
+                    </div>
+                </div>
+            </fieldset>
+
+            <fieldset>
+                <legend>Best case</legend>
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <label for="best_case_budget">Budget</label>
+                        <table class="table table-condensed table-striped table-bordered">
+                            <tr>
+                                <th>Expenses</th>
+                            </tr>
+                            <tr>
+                                <th>Item and description</th>
+                                <th>Cost ($)</th>
+                                <th></th>
+                            </tr>
+                            <tr ng-repeat="item in db.current_application.best_case_budget.expenses">
+                                <td>{{ item.name }}</td>
+                                <td>{{ item.value | currency }}</td>
+                                <td><span class="glyphicon glyphicon-remove"
+                                          ng-click="del_row(db.current_application.best_case_budget, 'expenses', $index)"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><input type="text" ng-model="n"/></td>
+                                <td><input type="number" ng-model="v"></td>
+                                <td><span class="glpyhicon glyphicon-plus"
+                                          ng-click="add_row(db.current_application.best_case_budget, 'expenses', n, v); n=''; v='';"
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Total Expenses</strong></td>
+                                <td>{{ db.current_application.best_case_budget.total_expenses | currency }}</td>
+                            </tr>
+                            <tr>
+                                <th>Revenues</th>
+                            </tr>
+                            <tr>
+                                <th>Item</th>
+                                <th>Amount ($)</th>
+                                <th></th>
+                            </tr>
+                            <tr ng-repeat="item in db.current_application.best_case_budget.revenues">
+                                <td>{{ item.name }}</td>
+                                <td>{{ item.value | currency }}</td>
+                                <td><span class="glyphicon glyphicon-remove"
+                                          ng-click="del_row(db.current_application.best_case_budget, 'revenues', $index)"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><input type="text" ng-model="n2"/></td>
+                                <td><input type="number" ng-model="v2"></td>
+                                <td><span class="glpyhicon glyphicon-plus"
+                                          ng-click="add_row(db.current_application.best_case_budget, 'revenues', n2, v2); n2=''; v2='';"
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Total Revenues</strong></td>
+                                <td>{{ db.current_application.best_case_budget.total_revenues | currency }}</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <label for="best_case_description">Please describe this budget and why it is the best case for
+                            your group</label>
+                        <textarea class="form-control" name="best_case_description"
+                                  ng-model="db.current_application.best_case_description"
+                                  ng-disabled="!can_edit()" >
+                        </textarea>
+                    </div>
+                </div>
+
+            </fieldset>
+            <fieldset>
+                <legend>Moderate case</legend>
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <label for="moderate_case_budget">Budget</label>
+                        <table class="table table-condensed table-striped table-bordered">
+                            <tr>
+                                <th>Expenses</th>
+                            </tr>
+                            <tr>
+                                <th>Item and description</th>
+                                <th>Cost ($)</th>
+                                <th></th>
+                            </tr>
+                            <tr ng-repeat="item in db.current_application.moderate_case_budget.expenses">
+                                <td>{{ item.name }}</td>
+                                <td>{{ item.value | currency }}</td>
+                                <td><span class="glyphicon glyphicon-remove"
+                                          ng-click="del_row(db.current_application.moderate_case_budget, 'expenses', $index)"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><input type="text" ng-model="n"/></td>
+                                <td><input type="number" ng-model="v"></td>
+                                <td><span class="glpyhicon glyphicon-plus"
+                                          ng-click="add_row(db.current_application.moderate_case_budget, 'expenses', n, v); n=''; v='';"
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Total Expenses</strong></td>
+                                <td>{{ db.current_application.moderate_case_budget.total_expenses | currency }}</td>
+                            </tr>
+                            <tr>
+                                <th>Revenues</th>
+                            </tr>
+                            <tr>
+                                <th>Item</th>
+                                <th>Amount ($)</th>
+                                <th></th>
+                            </tr>
+                            <tr ng-repeat="item in db.current_application.moderate_case_budget.revenues">
+                                <td>{{ item.name }}</td>
+                                <td>{{ item.value | currency }}</td>
+                                <td><span class="glyphicon glyphicon-remove"
+                                          ng-click="del_row(db.current_application.moderate_case_budget, 'revenues', $index)"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><input type="text" ng-model="n2"/></td>
+                                <td><input type="number" ng-model="v2"></td>
+                                <td><span class="glpyhicon glyphicon-plus"
+                                          ng-click="add_row(db.current_application.moderate_case_budget, 'revenues', n2, v2); n2=''; v2='';"
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Total Revenues</strong></td>
+                                <td>{{ db.current_application.moderate_case_budget.total_revenues | currency }}</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <label for="moderate_case_description">Please describe this budget and why it is the second-best
+                            case for your group</label>
+                        <textarea class="form-control" name="moderate_case_description"
+                                  ng-model="db.current_application.moderate_case_description"
+                                  ng-disabled="!can_edit()" >
+                        </textarea>
+                    </div>
+                </div>
+
+            </fieldset>
+            <fieldset>
+                <legend>Worst case</legend>
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <label for="worst_case_budget">Budget</label>
+                        <table class="table table-condensed table-striped table-bordered">
+                            <tr>
+                                <th>Expenses</th>
+                            </tr>
+                            <tr>
+                                <th>Item and description</th>
+                                <th>Cost ($)</th>
+                                <th></th>
+                            </tr>
+                            <tr ng-repeat="item in db.current_application.worst_case_budget.expenses">
+                                <td>{{ item.name }}</td>
+                                <td>{{ item.value | currency }}</td>
+                                <td><span class="glyphicon glyphicon-remove"
+                                          ng-click="del_row(db.current_application.worst_case_budget, 'expenses', $index)"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><input type="text" ng-model="n"/></td>
+                                <td><input type="number" ng-model="v"></td>
+                                <td><span class="glpyhicon glyphicon-plus"
+                                          ng-click="add_row(db.current_application.worst_case_budget, 'expenses', n, v); n=''; v='';"
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Total Expenses</strong></td>
+                                <td>{{ db.current_application.worst_case_budget.total_expenses | currency }}</td>
+                            </tr>
+                            <tr>
+                                <th>Revenues</th>
+                            </tr>
+                            <tr>
+                                <th>Item</th>
+                                <th>Amount ($)</th>
+                                <th></th>
+                            </tr>
+                            <tr ng-repeat="item in db.current_application.worst_case_budget.revenues">
+                                <td>{{ item.name }}</td>
+                                <td>{{ item.value | currency }}</td>
+                                <td><span class="glyphicon glyphicon-remove"
+                                          ng-click="del_row(db.current_application.worst_case_budget, 'revenues', $index)"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><input type="text" ng-model="n2"/></td>
+                                <td><input type="number" ng-model="v2"></td>
+                                <td><span class="glpyhicon glyphicon-plus"
+                                          ng-click="add_row(db.current_application.worst_case_budget, 'revenues', n2, v2); n2=''; v2='';"
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Total Revenues</strong></td>
+                                <td>{{ db.current_application.worst_case_budget.total_revenues | currency }}</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <label for="worst_case_description">Please describe this budget and why it is the third-best
+                            case for your group</label>
+                        <textarea class="form-control" name="worst_case_description"
+                                  ng-model="db.current_application.worst_case_description"
+                                  ng-disabled="!can_edit()" >
+                        </textarea>
+                    </div>
+                </div>
+            </fieldset>
+        </form>
+
+        <div class="col-md-12">
+            <p ng-if="db.current_application.endorsement">{{ db.current_application.endorsement }}</p>
+
+            <p ng-if="!db.current_application.endorsement">This application has not yet been
+                endorsed. Please reach out to your governing board representative to have him or her
+                endorse this application.</p>
+        </div>
+
+        <div class="col-md-12">
+            <p>In addition to filling out this application, you must also have your governing board representative
+                endorse this document before it will be considered.</p>
+        </div>
+        <div class="col-md-12">
+            <div class="btn-group">
+                <a class="btn" ng-class="{
+                    'btn-success': cif_form.$valid,
+                    'btn-danger': cif_form.$invalid
+                }" ng-click="$event.preventDefault(); saveApplication()" ng-disable="!can_edit() || cif_form.$invalid">Save</a>
+            </div>
+        </div>
+    </div>
+
+</div>

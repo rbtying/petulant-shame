@@ -1,0 +1,230 @@
+<div class="container" fade-in>
+
+    <div class="row">
+        <div class="col-md-12">
+            <h1>CIF Application #{{ db.current_application.id }}</h1>
+        </div>
+    </div>
+    <div class="row">
+        <table class="table">
+            <tr>
+                <th>Title</th>
+                <td>{{ db.current_application.title }}</td>
+            </tr>
+            <tr>
+                <th>Status</th>
+                <td>{{ db.current_application.status }}</td>
+            </tr>
+            <tr>
+                <th>Requester</th>
+                <td>
+                    <a href="#/student_groups/{{ db.current_application.requester }}" target="_blank">
+                        {{ db.student_groups_by_id[db.current_application.requester].name }}
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <th>Allocation ({{ db.student_groups_by_id[db.current_application.requester].allocation.year }})</th>
+                <td>{{ db.student_groups_by_id[db.current_application.requester].allocation.value | currency }}</td>
+            </tr>
+            <tr>
+                <th>Requested amount</th>
+                <td>{{ db.current_application.requested_amount | currency }}</td>
+            </tr>
+            <tr>
+                <th>Projected best-case budget</th>
+                <td>
+                    <p>
+                        <span style="color:red" ng-show="db.current_application.best_case_budget.total_expenses">
+                            Expenditures: {{ db.current_application.best_case_budget.total_expenses | currency }}
+                        </span>
+                            &nbsp;
+                        <span style="color:green" ng-show="db.current_application.best_case_budget.total_revenues">
+                            Revenues: {{ db.current_application.best_case_budget.total_revenues | currency }}
+                        </span>
+                    </p>
+                    <p>
+                        {{ db.current_application.best_case_description }}
+                    </p>
+                </td>
+            </tr>
+            <tr>
+                <th>Projected moderate-case budget</th>
+                <td>
+                    <p>
+                        <span style="color:red" ng-show="db.current_application.moderate_case_budget.total_expenses">
+                            Expenditures: {{ db.current_application.moderate_case_budget.total_expenses | currency }}
+                        </span>
+                        &nbsp;
+                        <span style="color:green" ng-show="db.current_application.moderate_case_budget.total_revenues">
+                            Revenues: {{ db.current_application.moderate_case_budget.total_revenues | currency }}
+                        </span>
+                    </p>
+                    <p>
+                        {{ db.current_application.moderate_case_description }}
+                    </p>
+                </td>
+            </tr>
+            <tr>
+                <th>Projected worst-case budget</th>
+                <td>
+                    <p>
+                        <span style="color:red" ng-show="db.current_application.worst_case_budget.total_expenses">
+                            Expenditures: {{ db.current_application.worst_case_budget.total_expenses | currency }}
+                        </span>
+                        &nbsp;
+                        <span style="color:green" ng-show="db.current_application.worst_case_budget.total_revenues">
+                            Revenues: {{ db.current_application.worst_case_budget.total_revenues | currency }}
+                        </span>
+                    </p>
+                    <p>
+                        {{ db.current_application.worst_case_description }}
+                    </p>
+                </td>
+            </tr>
+            <tr>
+                <th>Updated time</th>
+                <td>{{ db.current_application.updated_time | date:'medium' }}</td>
+            </tr>
+            <tr>
+                <th>Created time</th>
+                <td>{{ db.current_application.created_time | date:'medium' }}</td>
+            </tr>
+            <tr>
+                <th>Scheduled time</th>
+                <td>{{ db.current_application.scheduled_time | date:'medium' }}</td>
+            </tr>
+            <tr ng-show="db.current_application.status == 'APRV'">
+                <th>Approved amount</th>
+                <td>{{ db.current_application.approved_amount | currency }}</td>
+            </tr>
+            <tr>
+                <th>Requsted funding from</th>
+                <td>
+                    <span class="label label-default" style="margin-right: 5px;" ng-repeat="f in db.current_application.funder">
+                        {{ db.groups_by_id[f].name }}
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <th>Contact info</th>
+                <td>
+                    <p><strong>Email:</strong> {{ db.users_by_id[db.current_application.contact].email }}</p>
+                    <p><strong>Phone:</strong> {{ db.current_application.contact_phone }}</p>
+                    <p><strong>Position:</strong> {{ db.current_application.contact_position }}</p>
+                </td>
+            </tr>
+            <tr>
+                <th>Endorsement</th>
+                <td ng-bind="db.current_application.endorsement"></td>
+            </tr>
+            <tr>
+                <th>Editors</th>
+                <td>{{ db.current_application.editors.join(","); }}</td>
+            </tr>
+            <tr>
+                <th>Attachments</th>
+                <td>
+                    <ul class="list-unstyled">
+                        <li ng-repeat="a in db.current_application.attachments">
+                            <a href="{{ MEDIA_URL }}{{ a.attachment }}" title="{{ a.name }}" target="_blank">{{ a.name }}</a>
+                            <span class="glyphicon glyphicon-remove pull-right"
+                                  style="cursor: pointer;" ng-show="can_edit()"
+                                  ng-click="deleteFile(a.id)"></span>
+                        </li>
+                    </ul>
+                </td>
+            </tr>
+            <tr ng-show="db.current_application.notes">
+                <th>Notes</th>
+                <td ng-bind="db.current_application.notes"></td>
+            </tr>
+        </table>
+    </div>
+    <div class="row" ng-if="current_user.on_council || db.current_application.editors.indexOf(current_user.email) > -1">
+        <div class="col-md-12">
+            <div ng-if="db.current_application.status == 'FILE' && current_user.on_council">
+                <div class="btn btn-default" ng-disabled="complete_form.$invalid" ng-click="completeApplication()">Complete application</div>
+                <form name="complete_form">
+                    <div class="form-group">
+                        <label for="transferred_amount">Transferred amount</label>
+                        <input name="transferred_amount" type="number" class="form-control"
+                               id="cif-transferred_amount"
+                               ng-model="db.current_application.transferred_amount"
+                               required>
+                    </div>
+                </form>
+
+            </div>
+            <div ng-if="db.current_application.status == 'APRV' || db.current_application.status == 'FILE'">
+                <p>Please upload your receipts with filenames of the form <code>receipt-expense_name-expense_date.pdf</code></p>
+                <div class="btn btn-default" ng-file-select="uploadFile($files)" data-multiple>Add receipt</div>
+                <div class="btn btn-success" ng-disabled="rev_form.$invalid" ng-click="fileApplication()">File application</div>
+                <form name="rev_form">
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label for="actual_expenditures">Actual expenditures</label>
+                                <input name="actual_expenditures" type="number" class="form-control"
+                                       id="cif-actual_expenditures"
+                                       ng-model="db.current_application.actual_expenditures"
+                                       required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="actual_revenues">Actual revenues</label>
+                                <input name="actual_revenues" type="number" class="form-control"
+                                       id="cif-actual_revenues"
+                                       ng-model="db.current_application.actual_revenues"
+                                       required>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div ng-if="db.current_application.status == 'PEND'">
+                <div class="btn btn-default" ng-file-select="uploadFile($files)" data-multiple>Add attachment</div>
+                <a href="#/cif/{{ db.current_application.id }}/edit" class="btn btn-default">Edit</a>
+                <a ng-click="submitApplication()" class="btn btn-default">Submit</a>
+                <a ng-click="endorseApplication()" class="btn btn-default" ng-show="can_endorse()">Endorse</a>
+            </div>
+            <div ng-if="db.current_application.status == 'SUBM' && current_user.on_council">
+                <div class="form-group">
+                    <div class="col-md-4">
+                        <input type="text" class="form-control" ng-model="db.current_application.scheduled_time" bs-datepicker>
+                    </div>
+                    <div class="col-md-4">
+                        <input type="text" class="form-control" ng-model="db.current_application.scheduled_time" bs-timepicker>
+                    </div>
+                    <div class="col-md-4">
+                        <a ng-click="scheduleApplication()" class="btn btn-default" ng-disabled="!db.current_application.scheduled_time">Schedule</a>
+                    </div>
+                </div>
+            </div>
+            <div ng-if="db.current_application.status == 'SCHD' && current_user.on_council">
+                <div class="form-group">
+                    <div class="col-md-4">
+                        <input type="text" class="form-control" ng-model="db.current_application.scheduled_time" bs-datepicker>
+                    </div>
+                    <div class="col-md-4">
+                        <input type="text" class="form-control" ng-model="db.current_application.scheduled_time" bs-timepicker>
+                    </div>
+                    <div class="col-md-4">
+                        <a ng-click="scheduleApplication()" class="btn btn-default" ng-disabled="!db.current_application.scheduled_time">reschedule</a>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="notes">Notes</label>
+                    <textarea name="notes" class="form-control" ng-model="db.notes">
+                    </textarea>
+                </div>
+                <div class="form-group">
+                    <label for="approved_amount">Approved amount</label>
+                    <input type="number" name="approved_amount" class="form-control" ng-model="db.current_application.approved_amount">
+                </div>
+
+                <a ng-click="approveApplication()" class="btn btn-success" ng-disabled="!db.current_application.approved_amount && !db.notes">Approve</a>
+                <a ng-click="denyApplication()" class="btn btn-danger" ng-disabled="!db.notes">Deny</a>
+            </div>
+        </div>
+    </div>
+</div>

@@ -168,8 +168,6 @@ class JCCCApplicationSerializer(serializers.ModelSerializer):
 
 
 class CIFApplicationSerializer(serializers.ModelSerializer):
-    attachments = AttachedFileSerializer(source='attachedfile_set')
-
     def get_fields(self, *args, **kwargs):
         fields = super(CIFApplicationSerializer, self).get_fields(*args, **kwargs)
         request = self.context.get('request', None)
@@ -184,15 +182,6 @@ class CIFApplicationSerializer(serializers.ModelSerializer):
     def validate_editors(self, attrs, source):
         return check_json_list(attrs, source)
 
-    def validate_best_case_budget(self, attrs, source):
-        return check_json_list(attrs, source)
-
-    def validate_moderate_case_budget(self, attrs, source):
-        return check_json_list(attrs, source)
-
-    def validate_worst_case_budget(self, attrs, source):
-        return check_json_list(attrs, source)
-
     def validate(self, attrs):
         if attrs['status'] != FundingRequest.STATUS_PENDING:
             tocheck = ('description', 'financial_history', 'roadblock', 'best_case_description',
@@ -205,16 +194,15 @@ class CIFApplicationSerializer(serializers.ModelSerializer):
     class Meta:
         model = CIFApplication
         fields = (
-        'id', 'title', 'requested_amount', 'approved_amount', 'status', 'notes', 'created_time',
-        'updated_time', 'submitted_time', 'scheduled_time', 'requester', 'funder', 'contact',
-        'contact_phone', 'contact_position', 'editors', 'description', 'financial_history',
-        'roadblock', 'best_case_description', 'moderate_case_description', 'worst_case_description',
-        'endorsement', 'attachments')
+            'id', 'title', 'requested_amount', 'approved_amount', 'status', 'notes', 'created_time',
+            'updated_time', 'submitted_time', 'scheduled_time', 'requester', 'funder', 'contact',
+            'contact_phone', 'contact_position', 'editors', 'description', 'financial_history',
+            'roadblock', 'best_case_description', 'best_case_budget', 'moderate_case_description',
+            'moderate_case_budget', 'worst_case_description', 'worst_case_budget',
+            'endorsement')
 
 
 class ESCProjectGrantApplicationSerializer(serializers.ModelSerializer):
-    attachments = AttachedFileSerializer(source='attachedfile_set')
-
     def get_fields(self, *args, **kwargs):
         fields = super(ESCProjectGrantApplicationSerializer, self).get_fields(*args, **kwargs)
         request = self.context.get('request', None)
@@ -255,4 +243,4 @@ class ESCProjectGrantApplicationSerializer(serializers.ModelSerializer):
         'updated_time', 'submitted_time', 'scheduled_time', 'funder', 'contact', 'contact_phone',
         'contact_position', 'editors', 'members', 'description', 'materials', 'tools', 'workload',
         'fund_usage', 'schedule', 'safety', 'failure', 'feasibility', 'benefit', 'donation',
-        'additional', 'advisor', 'attachments')
+        'additional', 'advisor')

@@ -271,6 +271,180 @@ facu.factory('API',
             });
         };
 
+        api_calls.cif_app.submit = function(id) {
+            $log.debug('submitting cif app ', id);
+            return whttp({
+                url: baseurl + cif_app + id + '/submit/',
+                method: 'POST'
+            });
+        };
+
+        api_calls.cif_app.schedule = function(id, schedule_date) {
+            $log.debug('scheduling cif app ', id);
+            return whttp({
+                url: baseurl + cif_app + id + '/schedule/',
+                method: 'POST',
+                data: {
+                    'date': schedule_date
+                }
+            });
+        };
+
+        api_calls.cif_app.approve = function(id, approval_amt, notes) {
+            $log.debug('approving cif app ', id);
+            return whttp({
+                url: baseurl + cif_app + id + '/approve/',
+                method: 'POST',
+                data: {
+                    'amt': approval_amt,
+                    'notes': notes
+                }
+            });
+        };
+
+        api_calls.cif_app.reject = function(id, notes) {
+            $log.debug('rejecting cif app ', id);
+            return whttp({
+                url: baseurl + cif_app + id + '/reject/',
+                method: 'POST',
+                data: {
+                    'notes': notes
+                }
+            });
+        };
+
+        api_calls.cif_app.endorse = function(id, endorsement) {
+            $log.debug('endorsing cif app ', id);
+            return whttp({
+                url: baseurl + cif_app + id + '/endorse/',
+                method: 'POST',
+                data: {
+                    endorsement: endorsement
+                }
+            });
+        };
+
+        api_calls.cif_app.file = function(id, revenue, expenditures) {
+            return whttp({
+                url: baseurl + cif_app + id + '/file/',
+                method: 'POST',
+                data: {
+                    revenue: revenue,
+                    expenditures: expenditures
+                }
+            });
+        };
+
+        api_calls.cif_app.complete = function(id, transferred_amt) {
+            return whttp({
+                url: baseurl + cif_app + id + '/complete/',
+                method: 'POST',
+                data: {
+                    amt: transferred_amt
+                }
+            });
+        };
+
+        api_calls.cif_app.upload_file = function(id, files) {
+            $log.debug('uploading file to cif app', id, files);
+
+            return $upload.upload({
+                url: baseurl + cif_app + id + '/upload_file/',
+                file: files
+            });
+        };
+
+        api_calls.cif_app.delete_file = function(id, fileid) {
+            return whttp({
+                url: baseurl + cif_app + id + '/delete_file/',
+                method: 'POST',
+                data: {
+                    file: fileid
+                }
+            });
+        };
+
+        api_calls.esc_proj.submit = function(id) {
+            $log.debug('submitting cif app ', id);
+            return whttp({
+                url: baseurl + esc_proj + id + '/submit/',
+                method: 'POST'
+            });
+        };
+
+        api_calls.esc_proj.schedule = function(id, schedule_date) {
+            $log.debug('scheduling cif app ', id);
+            return whttp({
+                url: baseurl + esc_proj + id + '/schedule/',
+                method: 'POST',
+                data: {
+                    'date': schedule_date
+                }
+            });
+        };
+
+        api_calls.esc_proj.approve = function(id, approval_amt, notes) {
+            $log.debug('approving cif app ', id);
+            return whttp({
+                url: baseurl + esc_proj + id + '/approve/',
+                method: 'POST',
+                data: {
+                    'amt': approval_amt,
+                    'notes': notes
+                }
+            });
+        };
+
+        api_calls.esc_proj.reject = function(id, notes) {
+            $log.debug('rejecting cif app ', id);
+            return whttp({
+                url: baseurl + esc_proj + id + '/reject/',
+                method: 'POST',
+                data: {
+                    'notes': notes
+                }
+            });
+        };
+
+        api_calls.esc_proj.file = function(id, revenue, expenditures) {
+            return whttp({
+                url: baseurl + esc_proj + id + '/file/',
+                method: 'POST',
+                data: {
+                    revenue: revenue,
+                    expenditures: expenditures
+                }
+            });
+        };
+
+        api_calls.esc_proj.complete = function(id, transferred_amt) {
+            return whttp({
+                url: baseurl + esc_proj + id + '/complete/',
+                method: 'POST',
+                data: {
+                    amt: transferred_amt
+                }
+            });
+        };
+
+        api_calls.esc_proj.upload_file = function(id, files) {
+            $log.debug('uploading file to cif app', id, files);
+
+            return $upload.upload({
+                url: baseurl + esc_proj + id + '/upload_file/',
+                file: files
+            });
+        };
+
+        api_calls.esc_proj.delete_file = function(id, fileid) {
+            return whttp({
+                url: baseurl + esc_proj + id + '/delete_file/',
+                method: 'POST',
+                data: {
+                    file: fileid
+                }
+            });
+        };
         return api_calls;
     }
 );

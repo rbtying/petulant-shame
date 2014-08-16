@@ -116,6 +116,86 @@ facu.config(['$routeProvider', '$locationProvider', '$httpProvider', function ($
             'current_user': current_user_func
         }
     });
+    $routeProvider.when('/cif', {
+        templateUrl: '/static/partials/cif/main.html',
+        controller: 'cifCtrl',
+        resolve: {
+            'controller_action': function() {return 'main'},
+            'current_user': current_user_func
+        }
+    });
+    $routeProvider.when('/cif/list', {
+        templateUrl: '/static/partials/cif/list.html',
+        controller: 'cifCtrl',
+        resolve: {
+            'controller_action': function() {return 'list'},
+            'current_user': current_user_func
+        }
+    });
+    $routeProvider.when('/cif/new', {
+        templateUrl: '/static/partials/cif/edit.html',
+        controller: 'cifCtrl',
+        resolve: {
+            'controller_action': function() {return 'new'},
+            'current_user': current_user_func
+        }
+    });
+    $routeProvider.when('/cif/:id/edit', {
+        templateUrl: '/static/partials/cif/edit.html',
+        controller: 'cifCtrl',
+        resolve: {
+            'controller_action': function() {return 'edit'},
+            'current_user': current_user_func
+        }
+    });
+    $routeProvider.when('/cif/:id', {
+        templateUrl: '/static/partials/cif/show.html',
+        controller: 'cifCtrl',
+        resolve: {
+            'controller_action': function() {return 'show'},
+            'current_user': current_user_func
+        }
+    });
+    $routeProvider.when('/esc_proj', {
+        templateUrl: '/static/partials/esc_proj/main.html',
+        controller: 'escProjCtrl',
+        resolve: {
+            'controller_action': function() {return 'main'},
+            'current_user': current_user_func
+        }
+    });
+    $routeProvider.when('/esc_proj/list', {
+        templateUrl: '/static/partials/esc_proj/list.html',
+        controller: 'escProjCtrl',
+        resolve: {
+            'controller_action': function() {return 'list'},
+            'current_user': current_user_func
+        }
+    });
+    $routeProvider.when('/esc_proj/new', {
+        templateUrl: '/static/partials/esc_proj/edit.html',
+        controller: 'escProjCtrl',
+        resolve: {
+            'controller_action': function() {return 'new'},
+            'current_user': current_user_func
+        }
+    });
+    $routeProvider.when('/esc_proj/:id/edit', {
+        templateUrl: '/static/partials/esc_proj/edit.html',
+        controller: 'escProjCtrl',
+        resolve: {
+            'controller_action': function() {return 'edit'},
+            'current_user': current_user_func
+        }
+    });
+    $routeProvider.when('/jccc/:id', {
+        templateUrl: '/static/partials/jccc/show.html',
+        controller: 'jcccCtrl',
+        resolve: {
+            'controller_action': function() {return 'show'},
+            'current_user': current_user_func
+        }
+    });
     $routeProvider.when('/groups/:id', {
         controller: 'groupCtrl',
         templateUrl: '/static/partials/group/group.html',

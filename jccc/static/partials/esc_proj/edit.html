@@ -1,0 +1,355 @@
+<div class="container" fade-in>
+
+    <div class="row">
+        <div class="col-md-12">
+            <h1 ng-if="db.current_application.id">
+                Editing JCCC Application #{{ db.current_application.id }}
+            </h1>
+
+            <h1 ng-if="!db.current_application.id">
+                New JCCC Application
+            </h1>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <p>
+                The goal of the JCCC is to enrich student life through financial support of
+                established student clubs and organizations and the streamlining of the bureaucratic
+                processes for accessing such funds. Specifically, the JCCC aims to fund new
+                initiatives and fiscal emergencies that their respective governing boards are unable
+                to support. As such, the JCCC asks student groups to first approach their respective
+                governing board for a co-sponsorship or appeal prior to requesting Council support.
+                Further, before applying, the JCCC requests that student groups approach their
+                advisor to discuss alternative funding possibilities (corporate etc) and to confirm
+                their application eligibility.
+            </p>
+            <p>
+                After saving this form, you must also attach an event budget to this application.
+                Please use the following naming convention when submitting the document:
+            </p>
+            <p><code>SubmissionDate_GroupName_EventName</code></p>
+            <p>Example: <code>10.23.13_Cookie Club_Cookie Study Break.xls</code></p>
+
+            <p>If you have any questions or concerns, please email <a
+                    href="mailto:treasurers@columbia.edu">treasurers@columbia.edu</a></p>
+        </div>
+    </div>
+    <div class="row">
+        <form role="form" name="jccc_form" ng-submit="saveApplication()" novalidate>
+            <fieldset>
+                <legend>Application info</legend>
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <label for="title">Title</label>
+                        <input name="title" type="text" class="form-control" id="jccc-title"
+                               ng-model="db.current_application.title" ng-disabled="!can_edit()" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <label for="status">Status</label>
+                        <select name="status" class="form-control" id="jccc-status"
+                                ng-model="db.current_application.status" disabled>
+                            <option value="PEND">Pending</option>
+                            <option value="SUBM">Submitted</option>
+                            <option value="SCHD">Scheduled</option>
+                            <option value="APRV">Approved</option>
+                            <option value="DENY">Denied</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-6">
+                        <label for="allocation">What is your club allocation?</label>
+                        <input name="allocation" type="text" class="form-control"
+                               id="jccc-allocation" placeholder="Select the requesting group first"
+                               ng-model="db.current_group_allocation" disabled>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-6">
+                        <label for="balance">What is the current balance of your account?</label>
+                        <input name="balance" type="number" class="form-control"
+                               id="jccc-balance"
+                               ng-model="db.current_application.current_balance"
+                               ng-disabled="!can_edit()" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-6">
+                        <label for="requested_amount">What is your total request?</label>
+                        <input name="requested_amount" type="number" class="form-control"
+                               id="jccc-requested-amount"
+                               ng-model="db.current_application.requested_amount"
+                               ng-disabled="!can_edit()" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-6">
+                        <label for="approved_amount">Approved amount</label>
+                        <input name="approved_amount" type="number" class="form-control"
+                               id="jccc-approved-amount"
+                               ng-model="db.current_application.approved_amount"
+                               placeholder="This application has not yet been approved"
+                               disabled>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-6">
+                        <label for="projected_expenditures">Expected expenditures</label>
+                        <input name="projected_expenditures" type="number" class="form-control"
+                               id="jccc-projected_expenditures"
+                               ng-model="db.current_application.projected_expenditures"
+                               required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-6">
+                        <label for="projected_revenues">Expected revenues</label>
+                        <input name="projected_revenues" type="number" class="form-control"
+                               id="jccc-projected_revenues"
+                               ng-model="db.current_application.projected_revenues"
+                               required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <label for="other">
+                            If your total request exceeds the difference between your expenses and revenue, or your current balance, please explain:
+                        </label>
+                        <textarea name="other" class="form-control" id="jccc-other"
+                                  ng-model="db.current_application.other"></textarea>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-6">
+                        <label for="requester">What student group is this for?</label>
+                        <select name="requester" class="form-control" id="jccc-requester"
+                                ng-model="db.current_application.requester" ng-options="g.id as g.name for g in db.student_groups"
+                                ng-disabled="!can_edit()" required>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-6">
+                        <label for="funder">Who are you requesting funds from?</label>
+                        <select name="funder" class="form-control" id="jccc-funder"
+                                ng-model="db.current_application.funder" ng-options="g.id as g.name for g in db.councils"
+                                ng-disabled="!can_edit()" required multiple>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-4">
+                        <label for="contact">Who is the primary contact for this application?</label>
+                        <select name="contact" class="form-control" id="jccc-contact"
+                                ng-model="db.current_application.contact" ng-options="u.id as u.email for u in db.users"
+                                ng-disabled="!can_edit()" required>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-4">
+                        <label for="contact_phone">Contact phone</label>
+                        <input name="contact_phone" type="text" class="form-control"
+                               id="jccc-contact_phone"
+                               ng-model="db.current_application.contact_phone" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-4">
+                        <label for="contact_position">Contact position</label>
+                        <input name="contact_position" type="text" class="form-control"
+                               id="jccc-contact_position"
+                               ng-model="db.current_application.contact_position" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <label for="editors">Who can edit this application? (Columbia emails, comma-separated)</label>
+                        <input name="editors" ng-list="," ng-trim="true" class="form-control"
+                               id="jccc-editors" ng-model="db.current_application.editors"
+                               ng-disabled="!can_edit()" required>
+                    </div>
+                </div>
+            </fieldset>
+            <fieldset>
+                <legend>Event Info</legend>
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <label for="event_name">Event Name</label>
+                        <input name="event_name" type="text" class="form-control"
+                               id="jccc-event_name" ng-model="db.current_application.event_name"
+                               ng-disabled="!can_edit()" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-5">
+                        <label for="event_date">Event Date</label>
+                        <input name="event_date" type="text" size="10" class="form-control"
+                               id="jccc-event_time" ng-model="db.current_application.event_time"
+                               placeholder="Date" bs-datepicker
+                               ng-disabled="!can_edit()" required>
+                    </div>
+                    <div class="col-md-5">
+                        <label for="event_time">Event Time</label>
+                        <input name="event_time" type="text" size="8" class="form-control"
+                               id="jccc-event_time" ng-model="db.current_application.event_time"
+                               placeholder="Time" bs-timepicker
+                               ng-disabled="!can_edit()" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-2">
+                        <label class="checkbox">
+                            <input type="checkbox"
+                                   name="event_recurring"
+                                   ng-model="db.current_application.event_recurring"
+                                   ng-disabled="!can_edit()" >
+                            Recurring Event
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <label for="event_location">Event Location</label>
+                        <input name="event_location" type="text" class="form-control"
+                               id="jccc-event_location"
+                               ng-model="db.current_application.event_location"
+                               ng-disabled="!can_edit()" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <label for="event_attendance">Event Attendance</label>
+                        <input name="event_attendance" type="number" class="form-control"
+                               id="jccc-event_attendance"
+                               ng-model="db.current_application.event_attendance"
+                               ng-disabled="!can_edit()" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <label for="event_description">Please briefly describe your event</label>
+                        <textarea class="form-control" name="event_description"
+                                  ng-model="db.current_application.event_description"
+                                  ng-disabled="!can_edit()" >
+
+                        </textarea>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <label for="event_audience">Who is the target audience of this event? How
+                            will the wider Columbia community benefit from this event or be included
+                            in it?</label>
+                        <textarea class="form-control" name="event_audience"
+                                  ng-model="db.current_application.event_audience"
+                                  ng-disabled="!can_edit()" >
+
+                        </textarea>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <label for="event_advertisement">How will your event be advertised? What are
+                            your predictions for its success?</label>
+                        <textarea class="form-control" name="event_advertisement"
+                                  ng-model="db.current_application.event_advertisement"
+                                  ng-disabled="!can_edit()" >
+
+                        </textarea>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <label for="alternate_funding">What other funding options have you
+                            applied to? Have those applications been successful?</label>
+                        <textarea class="form-control" name="alternate_funding"
+                                  ng-model="db.current_application.alternate_funding"
+                                  ng-disabled="!can_edit()" >
+
+                        </textarea>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <label for="alternate_plans">Which items on your budget would you cut first
+                            if your group did not raise enough funds?</label>
+                        <textarea class="form-control" name="alternate_plans"
+                                  ng-model="db.current_application.alternate_plans"
+                                  ng-disabled="!can_edit()" >
+
+                        </textarea>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <label for="advisor_advice">What financial advice has your advisor given you
+                            about this event? Did they tell you to apply to the JCCC?</label>
+                        <textarea class="form-control" name="advisor_advice"
+                                  ng-model="db.current_application.advisor_advice"
+                                  ng-disabled="!can_edit()" >
+
+                        </textarea>
+                    </div>
+                </div>
+
+            </fieldset>
+        </form>
+
+        <div class="col-md-12">
+            <p ng-if="db.current_application.endorsement">{{ db.current_application.endorsement }}</p>
+
+            <p ng-if="!db.current_application.endorsement">This application has not yet been
+                endorsed. Please reach out to your governing board representative to have him or her
+                endorse this application.</p>
+        </div>
+
+        <div class="col-md-12">
+            <p>In addition to filling out this application, you must also attach an event budget
+                (.xls/.xlsx preferred) and have your governing board representative endorse this
+                document before it will be considered.</p>
+
+            <p><strong>Reminder: </strong>Please read the JCCC Guidelines (linked on the About page
+                above). These
+                guidelines include specific restrictions on certain items such as travel and
+                advertising. The JCCC reserves the right to reject groups who are not familiar with
+                the guidelines at the time of their interview</p>
+        </div>
+        <div class="col-md-12">
+            <div class="btn-group">
+                <a class="btn" ng-class="{
+                    'btn-success': jccc_form.$valid,
+                    'btn-danger': jccc_form.$invalid
+                }" ng-click="$event.preventDefault(); saveApplication()" ng-disable="!can_edit() || jccc_form.$invalid">Save</a>
+            </div>
+        </div>
+    </div>
+
+</div>

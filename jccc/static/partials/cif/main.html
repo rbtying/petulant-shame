@@ -1,0 +1,48 @@
+<div class="container" fade-in>
+
+    <div class="row">
+        <div class="col-md-12">
+            <h1>CIF Applications</h1>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <h2>Existing Funding Requests</h2>
+        </div>
+        <div class="col-md-12">
+            <table class="table table-bordered">
+                <tr>
+                    <th>ID</th>
+                    <th>Title</th>
+                    <th>Group</th>
+                    <th>Status</th>
+                    <th>Requested amount</th>
+                    <th>Scheduled time</th>
+                    <th>Updated time</th>
+                    <th>Approved amount</th>
+                </tr>
+                <tr ng-repeat="app in applications">
+                    <td><a href="#/cif/{{ app.id }}">{{ app.id }}</a></td>
+                    <td>{{ app.title }}</td>
+                    <td>{{ db.student_groups_by_id[app.requester].name }}</td>
+                    <td>{{ app.status }}</td>
+                    <td>{{ app.requested_amount | currency }}</td>
+                    <td>{{ app.scheduled_time | date:'medium' }}</td>
+                    <td>{{ app.updated_time | date:'medium' }}</td>
+                    <td>
+                        <span ng-if="app.status == 'APRV'">
+                            {{ app.approved_amount | currency }}
+                        </span>
+                    </td>
+                </tr>
+
+            </table>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <a href="#/cif/new" class="btn btn-default">Request funding from the CIF</a>
+        </div>
+    </div>
+</div>
