@@ -131,9 +131,9 @@ class FundingRequestSerializer(serializers.ModelSerializer):
     class Meta:
         model = FundingRequest
         fields = (
-        'id', 'title', 'requested_amount', 'approved_amount', 'status', 'notes', 'created_time',
-        'updated_time', 'submitted_time', 'scheduled_time', 'requester', 'funder', 'contact',
-        'contact_phone', 'contact_position', 'editors', 'attachments')
+            'id', 'title', 'requested_amount', 'approved_amount', 'status', 'notes', 'created_time',
+            'updated_time', 'submitted_time', 'scheduled_time', 'requester', 'funder', 'contact',
+            'contact_phone', 'contact_position', 'editors', 'attachments')
 
 
 class JCCCApplicationSerializer(serializers.ModelSerializer):
@@ -156,13 +156,13 @@ class JCCCApplicationSerializer(serializers.ModelSerializer):
     class Meta:
         model = JCCCApplication
         fields = (
-        'id', 'title', 'requested_amount', 'approved_amount', 'status', 'notes', 'created_time',
-        'updated_time', 'submitted_time', 'scheduled_time', 'requester', 'funder', 'contact',
-        'contact_phone', 'contact_position', 'editors', 'description', 'event_name', 'event_time',
-        'event_location', 'event_attendance', 'event_recurring', 'event_description',
-        'event_advertisement', 'event_audience', 'current_balance', 'alternate_funding',
-        'alternate_plans', 'advisor_advice', 'endorsement', 'projected_expenditures',
-        'projected_revenues', 'actual_expenditures', 'actual_revenues', 'transferred_amount')
+            'id', 'title', 'requested_amount', 'approved_amount', 'status', 'notes', 'created_time',
+            'updated_time', 'submitted_time', 'scheduled_time', 'requester', 'funder', 'contact',
+            'contact_phone', 'contact_position', 'editors', 'description', 'event_name', 'event_time',
+            'event_location', 'event_attendance', 'event_type', 'event_description',
+            'event_advertisement', 'event_audience', 'current_balance', 'alternate_funding',
+            'alternate_plans', 'advisor_advice', 'endorsement', 'projected_expenditures',
+            'projected_revenues', 'actual_expenditures', 'actual_revenues', 'transferred_amount')
 
         depth = 0
 

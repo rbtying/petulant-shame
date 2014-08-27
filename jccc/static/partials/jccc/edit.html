@@ -49,14 +49,12 @@
 
                 <div class="form-group">
                     <div class="col-md-12">
-                        <label for="status">Status</label>
-                        <select name="status" class="form-control" id="jccc-status"
-                                ng-model="db.current_application.status" disabled>
-                            <option value="PEND">Pending</option>
-                            <option value="SUBM">Submitted</option>
-                            <option value="SCHD">Scheduled</option>
-                            <option value="APRV">Approved</option>
-                            <option value="DENY">Denied</option>
+                        <label for="event_type">Request type</label>
+                        <select name="event_type" class="form-control" id="jccc-event_type"
+                                ng-model="db.current_application.event_type">
+                            <option value="Emergency Funding">Emergency Funding</option>
+                            <option value="New Event">New Event Funding</option>
+                            <option value="Travel Grant">Travel Grant Funding</option>
                         </select>
                     </div>
                 </div>
@@ -218,13 +216,15 @@
 
                 <div class="form-group">
                     <div class="col-md-2">
-                        <label class="checkbox">
-                            <input type="checkbox"
-                                   name="event_recurring"
-                                   ng-model="db.current_application.event_recurring"
-                                   ng-disabled="!can_edit()" >
-                            Recurring Event
-                        </label>
+                        <label for="status">Status</label>
+                        <select name="status" class="form-control" id="jccc-status"
+                                ng-model="db.current_application.status" disabled>
+                            <option value="PEND">Pending</option>
+                            <option value="SUBM">Submitted</option>
+                            <option value="SCHD">Scheduled</option>
+                            <option value="APRV">Approved</option>
+                            <option value="DENY">Denied</option>
+                        </select>
                     </div>
                 </div>
 

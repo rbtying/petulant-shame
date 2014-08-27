@@ -6,6 +6,60 @@ controllers
 
         $scope.current_user = current_user;
 
+        $scope.application_filter = {};
+        $scope.db.states = [
+            {
+                n: 'All',
+                v: 'ALL'
+            },
+            {
+                n: 'Pending',
+                v: 'PEND'
+            },
+            {
+                n: 'Submitted',
+                v: 'SUBM'
+            },
+            {
+                n: 'Scheduled',
+                v: 'SCHD'
+            },
+            {
+                n: 'Approved',
+                v: 'APRV'
+            },
+            {
+                n: 'Denied',
+                v: 'DENY'
+            }
+        ];
+        $scope.application_filter_status = 'ALL';
+        $scope.groups_plus = [{
+            name: 'All',
+            id: 'all'
+        }];
+        $scope.application_filter_group = 'all';
+
+        API.student_groups.list().then(
+            function (sg) {
+                $scope.groups_plus = $scope.groups_plus.concat(sg);
+            });
+
+        $scope.$watch('application_filter_status', function (newval, oldval) {
+            if (newval && newval != 'ALL') {
+                $scope.application_filter.status = newval;
+            } else {
+                delete $scope.application_filter.status;
+            }
+        });
+        $scope.$watch('application_filter_group', function (newval, oldval) {
+            if (newval && newval != 'all') {
+                $scope.application_filter.requester =  newval;
+            } else {
+                delete $scope.application_filter.requester;
+            }
+        });
+
         var get_list = function () {
             var params = $location.search();
             API.jccc_app.list(params)
@@ -297,5 +351,19 @@ controllers
                     mutex = false;
                     $scope.notify('danger', 'Failed to complete JCCC Application', error);
                 });
+        };
+
+        $scope.noReceipt = function() {
+            for (var i in $scope.db.current_application.attachments) {
+                var attachment = $scope.db.current_application.attachments[i];
+                if (attachment.name.toLowerCase().indexOf('receipt') > -1) {
+                    return false;
+                }
+            }
+            return true;
+        };
+
+        $scope.noAttachment = function() {
+            return $scope.db.current_application.attachments.length == 0;
         };
     });

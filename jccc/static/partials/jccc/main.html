@@ -11,6 +11,22 @@
             <h2>Existing Funding Requests</h2>
         </div>
         <div class="col-md-12">
+            <form class="form-inline">
+                <div class="form-group">
+                    <label for="status">Filter by status</label>
+                    <select name="status" class="form-control" id="jccc-status"
+                            ng-model="application_filter_status" ng-options="s.v as s.n for s in db.states"
+                            bs-select>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="group">Filter by group</label>
+                    <select name="group" class="form-control" id="jccc-group"
+                            ng-model="application_filter_group" ng-options="s.id as s.name for s in groups_plus"
+                            bs-select>
+                    </select>
+                </div>
+            </form>
             <table class="table table-bordered">
                 <tr>
                     <th>ID</th>
@@ -22,7 +38,7 @@
                     <th>Updated time</th>
                     <th>Approved amount</th>
                 </tr>
-                <tr ng-repeat="app in applications">
+                <tr ng-repeat="app in applications | filter:application_filter">
                     <td><a href="#/jccc/{{ app.id }}">{{ app.id }}</a></td>
                     <td>{{ app.title }}</td>
                     <td>{{ db.student_groups_by_id[app.requester].name }}</td>

@@ -204,6 +204,7 @@ class JCCCApplication(FundingRequest):
     event_time = models.DateTimeField(null=True)
     event_location = models.CharField(max_length=128, blank=True)
     event_attendance = models.IntegerField(blank=True)
+    event_type = models.CharField(max_length=32)
     event_recurring = models.BooleanField(default=False)
     event_description = models.TextField(blank=True)
 

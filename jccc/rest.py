@@ -431,7 +431,7 @@ class JCCCApplicationViewSet(FundingRequestViewSet):
     required_submit_fields = (
         'title', 'requester', 'requested_amount', 'current_balance', 'funder', 'contact',
         'contact_phone', 'contact_position', 'event_audience', 'event_description',
-        'event_advertisement', 'alternate_funding', 'alternate_plans', 'advisor_advice',
+        'event_advertisement', 'event_type', 'alternate_funding', 'alternate_plans', 'advisor_advice',
         'endorsement')
     baseclass = JCCCApplication
 

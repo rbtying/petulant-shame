@@ -27,7 +27,7 @@
         }
     </style>
 
-    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{% static "css/vendor/bootstrap.min.css" %}">
 
     <link rel="stylesheet" href="{% static "css/vendor/ng-grid/ng-grid.css" %}">
 
@@ -73,13 +73,13 @@
 <!-- footer -->
 {% include "navbar-bottom.html" %}
 
-<script src="//code.jquery.com/jquery-1.10.2.min.js"></script>
-<script>window.jQuery || document.write('<script src="//code.jquery.com/jquery-1.10.2.min.js"><\/script>')</script>
+<script src="{% static "js/vendor/jquery/jquery-2.1.1.min.js" %}"></script>
+<script>window.jQuery || document.write('<script src="//code.jquery.com/jquery-2.1.1.min.js"><\/script>')</script>
 
-<script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+<script src="{% static "js/vendor/bootstrap/bootstrap.min.js" %}"></script>
 
 <!-- TODO localize -->
-<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/jquery-ui.min.js"></script>
+<script src="{% static "js/vendor/jquery-ui-1.11.1/jquery-ui.min.js" %}"></script>
 <script>
     FileAPI = {
         jsPath: '{% static "js/vendor/angular-file-upload/" %}',
@@ -88,22 +88,21 @@
 </script>
 <script src="{% static "js/vendor/papaparse/papaparse.min.js" %}"></script>
 <script src="{% static "js/vendor/angular-file-upload/angular-file-upload-shim.min.js" %}"></script>
-<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.9/angular.js"></script>
+<script src="{% static "js/vendor/angular/angular.min.js" %}"></script>
 <script src="{% static "js/vendor/angular-file-upload/angular-file-upload.min.js" %}"></script>
 
 <script src="{% static "js/vendor/ng-grid/ng-grid.js" %}"></script>
 
 <!-- enables rendering of injected html -->
 <!-- TODO localize -->
-<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.9/angular-sanitize.js"></script>
-
-<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.9/angular-route.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/d3/3.4.5/d3.min.js"></script>
+<script src="{% static "js/vendor/angular/angular-sanitize.js" %}"></script>
+<script src="{% static "js/vendor/angular/angular-route.js" %}"></script>
+<script src="{% static "js/vendor/d3/d3.min.js" %}"></script>
 <script src="{% static "js/vendor/angularcharts/angular-charts.min.js" %}"></script>
 
 <!-- angular strap -->
 <!-- TODO move from cdn to local -->
-<script src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min.js"></script>
+<script src="{% static "js/vendor/underscore/underscore-min.js" %}"></script>
 
 <!-- ACE Editor -->
 <!-- <script src="js/vendor/ui-ace/ace.js"></script> -->
@@ -113,7 +112,7 @@
 <!-- TODO consider using NPM/Bower to install third party libs -->
 
 <!-- TODO needed? -->
-<script src="//cdnjs.cloudflare.com/ajax/libs/prettify/r224/prettify.js"></script>
+<script src="{% static "js/vendor/prettify/prettify.js" %}"></script>
 <script src="{% static "js/vendor/angularstrap/angular-strap.min.js" %}"></script>
 <script src="{% static "js/vendor/angularstrap/angular-strap.tpl.min.js" %}"></script>
 

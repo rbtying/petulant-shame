@@ -97,7 +97,7 @@
                     <p><strong>Name:</strong> {{ db.current_application.event_name }}</p>
                     <p><strong>Location:</strong> {{ db.current_application.event_location }}</p>
                     <p><strong>Time:</strong> {{ db.current_application.event_time | date:'medium' }}</p>
-                    <p><strong>Recurring:</strong> {{ db.current_application.event_recurring ? 'yes' : 'no' }}</p>
+                    <p><strong>Request type:</strong> {{ db.current_application.event_type }}</p>
                     <p><strong>Attendance:</strong> {{ db.current_application.event_attendance }}</p>
                 </td>
             </tr>
@@ -170,7 +170,6 @@
             <div ng-if="db.current_application.status == 'APRV' || db.current_application.status == 'FILE'">
                 <p>Please upload your receipts with filenames of the form <code>receipt-expense_name-expense_date.pdf</code></p>
                 <div class="btn btn-default" ng-file-select="uploadFile($files)" data-multiple>Add receipt</div>
-                <div class="btn btn-success" ng-disabled="rev_form.$invalid" ng-click="fileApplication()">File application</div>
                 <form name="rev_form">
                     <div class="form-group">
                         <div class="row">
@@ -190,12 +189,13 @@
                             </div>
                         </div>
                     </div>
+                    <div class="btn btn-success" ng-disabled="rev_form.$invalid || noReceipt()" ng-click="fileApplication()">File application</div>
                 </form>
             </div>
             <div ng-if="db.current_application.status == 'PEND'">
                 <div class="btn btn-default" ng-file-select="uploadFile($files)" data-multiple>Add attachment</div>
                 <a href="#/jccc/{{ db.current_application.id }}/edit" class="btn btn-default">Edit</a>
-                <a ng-click="submitApplication()" class="btn btn-default">Submit</a>
+                <a ng-click="submitApplication()" ng-disabled="noAttachment()" class="btn btn-default">Submit</a>
                 <a ng-click="endorseApplication()" class="btn btn-default" ng-show="can_endorse()">Endorse</a>
             </div>
             <div ng-if="db.current_application.status == 'SUBM' && current_user.on_council">
